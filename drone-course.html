@@ -1214,7 +1214,7 @@ function renderObs(L) {
 
   // Clouds for lesson 7
   stage.querySelectorAll('.stage-cloud').forEach(c => c.remove());
-  if (n === 7) {
+  if (curLesson === 7) {
     for (let i = 0; i < 4; i++) {
       const c = document.createElement('div');
       c.className = 'stage-cloud';
