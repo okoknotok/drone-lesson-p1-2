@@ -1319,7 +1319,7 @@ const HINTS = {
 // ---- INIT ----
 function init() {
   buildWelcomeStars();
-  buildLessonSelect();
+  renderLessonSelect();
   showHome();
 }
 
@@ -1711,7 +1711,7 @@ function getState() {
 }
 
 // ---- RESULT ----
-function showResult(ok) { playSound(ok); 
+function showResult(ok) { 
   try { initAudio(); if (ok) playSuccess(); else playFail(); } catch(e) {}
   const modal = document.getElementById('result-modal');
   document.getElementById('m-emoji').textContent = ok ? '🎉' : '😢';
