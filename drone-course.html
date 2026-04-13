@@ -1017,14 +1017,14 @@ const BLOCK = {
 };
 
 const LESSONS = {
-  1: { title: '第1課：起飛！', task: '按下執行，讓無人機起飛！', palette: ['takeoff', 'land'], start: {x:50,y:38,a:0}, obs: [], chk: s => s.flying },
-  2: { title: '第2課：走一個正方形', task: '讓無人機走一圈回到起點！', palette: ['takeoff','forward','left','land'], start: {x:50,y:38,a:0}, obs: [], chk: s => s.returned },
-  3: { title: '第3課：認識重複 🔄', task: '用「重複」積木，讓無人機巡邏直線！', palette: ['takeoff','forward','repeat','wait','land'], start: {x:12,y:38,a:0}, obs: [], chk: s => s.dist >= 180 },
-  4: { title: '第4課：等候 ⏱️', task: '起飛 → 等候 → 降落！', palette: ['takeoff','wait','land'], start: {x:50,y:38,a:0}, obs: [], chk: s => s.done },
-  5: { title: '第5課：如果...就... ⚠️', task: '遇到障礙物時，轉向繞開它！', palette: ['takeoff','forward','left','right','if','land'], start: {x:12,y:38,a:0}, obs: [{x:55,y:38,e:'🪨',r:14}], chk: s => s.avoided },
-  6: { title: '第6課：我的飛行計劃 ✈️', task: '自由創作！設計自己的飛行路線！', palette: ['takeoff','forward','backward','left','right','wait','repeat','land'], start: {x:50,y:38,a:0}, obs: [], chk: s => s.len >= 3 },
-  7: { title: '第7課：穿越雲層 ☁️', task: '穿過所有雲層，不要撞到！', palette: ['takeoff','forward','left','right','land'], start: {x:8,y:38,a:0}, obs: [{x:28,y:38,e:'☁️',r:11},{x:50,y:38,e:'☁️',r:11},{x:72,y:38,e:'☁️',r:11}], chk: s => s.clouds >= 3 },
-  8: { title: '第8課：緊急救援 🚨', task: '繞過障礙，到達紅色目標！', palette: ['takeoff','forward','left','right','repeat','land'], start: {x:8,y:38,a:0}, obs: [{x:28,y:38,e:'🪨',r:10},{x:50,y:38,e:'☁️',r:10},{x:72,y:38,e:'🪨',r:10}], chk: s => s.target, target: {x:88,y:38} }
+  1: { title: '第1課：起飛！', task: '按下執行，讓無人機起飛！', palette: ['takeoff', 'land'], start: {x:50,y:38,a:90}, obs: [], chk: s => s.flying },
+  2: { title: '第2課：走一個正方形', task: '讓無人機走一圈回到起點！', palette: ['takeoff','forward','left','land'], start: {x:50,y:38,a:90}, obs: [], chk: s => s.returned },
+  3: { title: '第3課：認識重複 🔄', task: '用「重複」積木，讓無人機巡邏直線！', palette: ['takeoff','forward','repeat','wait','land'], start: {x:12,y:38,a:90}, obs: [], chk: s => s.dist >= 180 },
+  4: { title: '第4課：等候 ⏱️', task: '起飛 → 等候 → 降落！', palette: ['takeoff','wait','land'], start: {x:50,y:38,a:90}, obs: [], chk: s => s.done },
+  5: { title: '第5課：如果...就... ⚠️', task: '遇到障礙物時，轉向繞開它！', palette: ['takeoff','forward','left','right','if','land'], start: {x:12,y:38,a:90}, obs: [{x:55,y:38,e:'🪨',r:14}], chk: s => s.avoided },
+  6: { title: '第6課：我的飛行計劃 ✈️', task: '自由創作！設計自己的飛行路線！', palette: ['takeoff','forward','backward','left','right','wait','repeat','land'], start: {x:50,y:38,a:90}, obs: [], chk: s => s.len >= 3 },
+  7: { title: '第7課：穿越雲層 ☁️', task: '穿過所有雲層，不要撞到！', palette: ['takeoff','forward','left','right','land'], start: {x:8,y:38,a:90}, obs: [{x:28,y:38,e:'☁️',r:11},{x:50,y:38,e:'☁️',r:11},{x:72,y:38,e:'☁️',r:11}], chk: s => s.clouds >= 3 },
+  8: { title: '第8課：緊急救援 🚨', task: '繞過障礙，到達紅色目標！', palette: ['takeoff','forward','left','right','repeat','land'], start: {x:8,y:38,a:90}, obs: [{x:28,y:38,e:'🪨',r:10},{x:50,y:38,e:'☁️',r:10},{x:72,y:38,e:'🪨',r:10}], chk: s => s.target, target: {x:88,y:38} }
 };
 
 const HINTS = {
@@ -1099,7 +1099,7 @@ function renderLessonSelect() {
   grid.innerHTML = '';
   const tags = {0:'tag', 1:'tag', 2:'tag', 3:'tag', 4:'tag', 5:'tag practice', 6:'tag challenge', 7:'tag challenge'};
   const titles = ['起飛！','走一個正方形','認識重複','等候','如果...就...','我的飛行計劃','穿越雲層','緊急救援'];
-  const emojis = ['🚀','🧭','🔄','⏱️','⚠️','✈️','☁️','🚨'];
+  const emojis = ['🚀','⬆️⬇️⬅️➡️','🔄','⏱️','⚠️','✈️','☁️','🚨'];
   const tasks = ['讓無人機飛起來','走一圈回到起點','用重複積木巡邏','起飛→等候→降落','繞開障礙物','自由設計路線','穿過雲層','到達紅色目標'];
   const saved = getSavedProgress();
 
@@ -1334,16 +1334,16 @@ function execute(idx) {
   else if (block === 'land') { isFlying = false; updateDrone(); }
   else if (block === 'forward') moveFwd();
   else if (block === 'backward') moveBwd();
-  else if (block === 'left') { droneAngle = (droneAngle - 45 + 360) % 360; updateDrone(); }
-  else if (block === 'right') { droneAngle = (droneAngle + 45) % 360; updateDrone(); }
+  else if (block === 'left') { droneAngle = (droneAngle - 90 + 360) % 360; updateDrone(); }
+  else if (block === 'right') { droneAngle = (droneAngle + 90) % 360; updateDrone(); }
 
   execTimer = setTimeout(() => execute(idx + 1), delay);
 }
 
 function moveFwd() {
   const r = (droneAngle - 90) * Math.PI / 180;
-  droneX += Math.cos(r) * 6;
-  droneY += Math.sin(r) * 6;
+  droneX += Math.cos(r) * 15;
+  droneY += Math.sin(r) * 15;
   droneX = Math.max(3, Math.min(97, droneX));
   droneY = Math.max(28, Math.min(82, droneY));
   addTrail();
@@ -1353,8 +1353,8 @@ function moveFwd() {
 
 function moveBwd() {
   const r = (droneAngle + 90) * Math.PI / 180;
-  droneX += Math.cos(r) * 6;
-  droneY += Math.sin(r) * 6;
+  droneX += Math.cos(r) * 15;
+  droneY += Math.sin(r) * 15;
   droneX = Math.max(3, Math.min(97, droneX));
   droneY = Math.max(28, Math.min(82, droneY));
   addTrail();
@@ -1381,12 +1381,12 @@ function getState() {
     flying: isFlying,
     x: droneX, y: droneY,
     returned: curLesson === 2 && !isFlying && droneX >= 43 && droneX <= 57 && droneY >= 33 && droneY <= 43,
-    dist: Math.abs(droneX - L.start.x) * 4,
+    dist: (Math.abs(droneX - L.start.x) + Math.abs(droneY - L.start.y)) * 4,
     done: curLesson === 4 && !isFlying && program.length >= 3,
     avoided: curLesson === 5 && droneX > 62,
     len: program.length,
-    clouds: curLesson === 7 ? Math.max(0, Math.floor((droneX - 8) / 21)) : 0,
-    target: curLesson === 8 && droneX >= 82
+    clouds: curLesson === 7 ? Math.max(0, Math.min(3, Math.floor((droneX - 22) / 20))) : 0,
+    target: curLesson === 8 && droneX >= 78
   };
 }
 
