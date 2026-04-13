@@ -30,7 +30,262 @@
       overflow: hidden;
     }
 
-    /* ===== SCREEN SYSTEM ===== */
+    
+    /* ===== 3D-STYLE STAGE ===== */
+    .stage-panel {
+      perspective: 800px;
+      perspective-origin: 50% 50%;
+      transform-style: preserve-3d;
+    }
+    .stage-sky {
+      background: linear-gradient(180deg, 
+        #0a1628 0%, 
+        #1a3a5c 30%,
+        #2d5a7b 60%,
+        #1e4d6b 100%);
+    }
+    .stage-ground {
+      height: 28%;
+      background: linear-gradient(180deg, 
+        #1a5a3a 0%, 
+        #0d3d24 50%,
+        #0a2a1a 100%);
+      box-shadow: inset 0 20px 40px rgba(0,0,0,0.3);
+    }
+    .stage-drone {
+      text-shadow: 0 0 20px rgba(100,200,255,0.8);
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.5));
+      transition: transform 0.1s ease-out;
+    }
+    .stage-drone.flying {
+      text-shadow: 0 0 30px rgba(100,200,255,1), 0 0 60px rgba(100,200,255,0.5);
+      filter: drop-shadow(0 12px 24px rgba(0,0,0,0.6));
+    }
+    /* 3D obstacle style */
+    .stage-obstacle {
+      filter: drop-shadow(4px 4px 8px rgba(0,0,0,0.4));
+      transform: translate(-50%, 0) scale(1.05);
+    }
+    /* 3D target */
+    .stage-target {
+      filter: drop-shadow(0 0 15px rgba(255,100,100,0.8));
+      animation: targetPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes targetPulse {
+      0%, 100% { transform: translate(-50%, 0) scale(1); }
+      50% { transform: translate(-50%, 0) scale(1.15); }
+    }
+    /* 3D cloud layers */
+    .stage-cloud {
+      background: linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(200,220,255,0.7) 100%);
+      box-shadow: 0 10px 30px rgba(100,150,200,0.4), inset 0 -5px 15px rgba(100,150,200,0.3);
+      border-radius: 50%;
+    }
+    /* Stage border with 3D effect */
+    #stage-panel {
+      box-shadow: 
+        inset 0 0 0 3px rgba(255,255,255,0.1),
+        0 0 0 1px rgba(0,0,0,0.5),
+        0 20px 60px rgba(0,0,0,0.5),
+        0 0 100px rgba(100,150,255,0.1);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    /* Parallax stars */
+    .stage-star {
+      animation: starTwinkle 3s ease-in-out infinite;
+      box-shadow: 0 0 3px rgba(255,255,255,0.8);
+    }
+
+    /* ===== 3D BLOCKS ===== */
+    .palette-block {
+      box-shadow: 
+        2px 4px 0 rgba(0,0,0,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.2);
+      transform: translateY(0);
+      transition: all 0.15s ease;
+    }
+    .palette-block:hover {
+      box-shadow: 
+        3px 6px 0 rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.3);
+      transform: translateY(-2px);
+    }
+    .palette-block:active {
+      box-shadow: 1px 2px 0 rgba(0,0,0,0.3);
+      transform: translateY(2px);
+    }
+    .program-block {
+      box-shadow: 
+        3px 3px 0 rgba(0,0,0,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.15);
+    }
+    .program-block.running {
+      box-shadow: 
+        0 0 20px rgba(100,200,255,0.6),
+        3px 3px 0 rgba(0,0,0,0.3);
+      animation: blockPulse 0.4s ease-in-out;
+    }
+    @keyframes blockPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .program-block.done {
+      opacity: 0.7;
+      box-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+    }
+
+    .trail-dot {
+      width: 6px;
+      height: 6px;
+      background: radial-gradient(circle, rgba(100,200,255,0.8) 0%, rgba(100,200,255,0) 100%);
+      box-shadow: 0 0 10px rgba(100,200,255,0.5);
+      border-radius: 50%;
+      animation: trailFade 2s ease-out forwards;
+    }
+    @keyframes trailFade {
+      0% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(0.3); }
+    }
+
+    .progress-bar {
+      height: 12px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+    }
+    #prog-bar {
+      background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(102,126,234,0.5);
+      transition: width 0.3s ease-out;
+    }
+
+    .confetti-piece {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      animation: confettiFall 2s ease-out forwards;
+    }
+    @keyframes confettiFall {
+      0% { 
+        opacity: 1; 
+        transform: translateY(0) rotate(0deg) scale(1);
+      }
+      100% { 
+        opacity: 0; 
+        transform: translateY(300px) rotate(720deg) scale(0.5);
+      }
+    }
+
+    .screen {
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+    .screen.active {
+      animation: screenFadeIn 0.4s ease-out;
+    }
+    @keyframes screenFadeIn {
+      from { opacity: 0; transform: scale(0.98); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    /* Result modal 3D pop */
+    .result-modal {
+      animation: modal3DPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform-style: preserve-3d;
+    }
+    @keyframes modal3DPop {
+      0% { transform: scale(0.3) rotateX(-20deg); opacity: 0; }
+      50% { transform: scale(1.05) rotateX(5deg); }
+      100% { transform: scale(1) rotateX(0deg); opacity: 1; }
+    }
+
+    .lesson-card {
+      box-shadow: 
+        0 4px 15px rgba(0,0,0,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+      transition: all 0.3s ease;
+    }
+    .lesson-card:hover {
+      box-shadow: 
+        0 8px 30px rgba(0,0,0,0.4),
+        0 0 30px rgba(102,126,234,0.3);
+      transform: translateY(-5px) rotateX(2deg);
+    }
+    .lesson-card.completed {
+      box-shadow: 
+        0 0 20px rgba(100,200,100,0.3),
+        0 4px 15px rgba(0,0,0,0.2);
+    }
+    .lesson-card .emoji {
+      transition: transform 0.3s ease;
+    }
+    .lesson-card:hover .emoji {
+      transform: scale(1.2) rotateY(10deg);
+    }
+
+    /* Extended trail with color gradient */
+    .trail-dot:nth-child(3n) {
+      background: radial-gradient(circle, rgba(255,200,100,0.6) 0%, rgba(255,200,100,0) 100%);
+      box-shadow: 0 0 8px rgba(255,200,100,0.4);
+    }
+    .trail-dot:nth-child(3n+1) {
+      background: radial-gradient(circle, rgba(100,255,200,0.6) 0%, rgba(100,255,200,0) 100%);
+      box-shadow: 0 0 8px rgba(100,255,200,0.4);
+    }
+
+    .welcome-drone {
+      animation: welcomeDrone3D 3s ease-in-out infinite;
+      text-shadow: 0 0 40px rgba(100,200,255,0.8);
+    }
+    @keyframes welcomeDrone3D {
+      0%, 100% { 
+        transform: translateY(0) rotate(-5deg); 
+        text-shadow: 0 0 40px rgba(100,200,255,0.8);
+      }
+      25% {
+        transform: translateY(-15px) rotate(5deg);
+        text-shadow: 0 0 60px rgba(100,200,255,1);
+      }
+      50% { 
+        transform: translateY(-25px) rotate(-5deg); 
+        text-shadow: 0 0 80px rgba(100,200,255,1), 0 0 120px rgba(100,200,255,0.5);
+      }
+      75% {
+        transform: translateY(-15px) rotate(5deg);
+        text-shadow: 0 0 60px rgba(100,200,255,1);
+      }
+    }
+    .start-btn {
+      animation: btnPulse 2s ease-in-out infinite;
+    }
+    @keyframes btnPulse {
+      0%, 100% { box-shadow: 0 6px 20px rgba(102,126,234,0.4); }
+      50% { box-shadow: 0 6px 40px rgba(102,126,234,0.8), 0 0 60px rgba(102,126,234,0.4); }
+    }
+
+    #stage-hud {
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.85em;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    #attempt-badge {
+      background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+      border-radius: 20px;
+      padding: 4px 12px;
+      box-shadow: 0 2px 10px rgba(255,100,100,0.4);
+    }
+    .hint-btn {
+      background: linear-gradient(135deg, #ffa726, #ff9800);
+      box-shadow: 0 4px 15px rgba(255,167,0,0.4);
+    }
+
+
+/* ===== SCREEN SYSTEM ===== */
     .screen { display: none; }
     .screen.active { display: flex; }
 
@@ -669,6 +924,15 @@
     }
 
     /* ===== HINT PANEL ===== */
+    
+    @keyframes hintSlideIn {
+      from { opacity: 0; transform: translateY(20px) translateX(-50%); }
+      to { opacity: 1; transform: translateY(0) translateX(-50%); }
+    }
+    .hint-toast {
+      animation: hintSlideIn 0.3s ease-out;
+    }
+
     .hint-toast {
       position: absolute;
       bottom: 95px;
@@ -768,7 +1032,21 @@
     }
     .free-header h2 { font-size: 1.2em; font-weight: 800; }
     .free-body { flex: 1; display: flex; overflow: hidden; }
-    .free-stage {
+    
+    .free-drone {
+      text-shadow: 0 0 30px rgba(100,200,255,0.8);
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.5));
+    }
+    .free-drone.flying {
+      text-shadow: 0 0 50px rgba(100,200,255,1);
+      animation: freeDroneHover 2s ease-in-out infinite;
+    }
+    @keyframes freeDroneHover {
+      0%, 100% { transform: translate(-50%, 0); }
+      50% { transform: translate(-50%, -10px); }
+    }
+
+.free-stage {
       flex: 1;
       position: relative;
       overflow: hidden;
@@ -1257,6 +1535,7 @@ function addBlock(type) {
   `;
   ws.appendChild(el);
   updateWsCount();
+  playAddBlock();
 }
 
 function delBlock(el) {
@@ -1274,6 +1553,47 @@ function updateWsCount() {
   const n = document.getElementById('ws-blocks').children.length;
   document.getElementById('ws-count').textContent = `${n} 個積木`;
 }
+
+
+
+// ===== SIMPLE AUDIO SYSTEM =====
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+
+function initAudio() {
+  if (!audioCtx) audioCtx = new AudioCtx();
+}
+
+function playTone(freq, duration, type='sine', volume=0.1) {
+  try {
+    initAudio();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.value = freq;
+    gain.gain.value = volume;
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
+  } catch(e) {}
+}
+
+function playAddBlock() { playTone(523, 0.1, 'sine', 0.08); }
+function playRunBlock() { playTone(659, 0.08, 'square', 0.05); }
+function playSuccess() { 
+  playTone(523, 0.15, 'sine', 0.1);
+  setTimeout(() => playTone(659, 0.15, 'sine', 0.1), 100);
+  setTimeout(() => playTone(784, 0.2, 'sine', 0.1), 200);
+}
+function playFail() { 
+  playTone(200, 0.3, 'sawtooth', 0.08);
+}
+function playTakeoff() { playTone(440, 0.3, 'sine', 0.08); }
+function playLand() { playTone(330, 0.3, 'sine', 0.08); }
+function playForward() { playTone(550, 0.15, 'triangle', 0.06); }
+function playTurn() { playTone(300, 0.1, 'square', 0.04); }
 
 // ---- DRONE VISUAL ----
 function updateDrone() {
@@ -1330,12 +1650,12 @@ function execute(idx) {
   const block = program[idx];
   const delay = { takeoff: 600, land: 600, forward: 500, backward: 500, left: 400, right: 400, wait: 1500, repeat: 200, if: 200 }[block] || 300;
 
-  if (block === 'takeoff') { isFlying = true; updateDrone(); }
-  else if (block === 'land') { isFlying = false; updateDrone(); }
-  else if (block === 'forward') moveFwd();
+  if (block === 'takeoff') { isFlying = true; updateDrone(); playTakeoff(); }
+  else if (block === 'land') { isFlying = false; updateDrone(); playLand(); }
+  else if (block === 'forward') { moveFwd(); playForward(); }
   else if (block === 'backward') moveBwd();
-  else if (block === 'left') { droneAngle = (droneAngle - 90 + 360) % 360; updateDrone(); }
-  else if (block === 'right') { droneAngle = (droneAngle + 90) % 360; updateDrone(); }
+  else if (block === 'left') { droneAngle = (droneAngle - 90 + 360) % 360; updateDrone(); playTurn(); }
+  else if (block === 'right') { droneAngle = (droneAngle + 90) % 360; updateDrone(); playTurn(); }
 
   execTimer = setTimeout(() => execute(idx + 1), delay);
 }
@@ -1391,7 +1711,8 @@ function getState() {
 }
 
 // ---- RESULT ----
-function showResult(ok) {
+function showResult(ok) { playSound(ok); 
+  try { initAudio(); if (ok) playSuccess(); else playFail(); } catch(e) {}
   const modal = document.getElementById('result-modal');
   document.getElementById('m-emoji').textContent = ok ? '🎉' : '😢';
   document.getElementById('m-title').textContent = ok ? '太棒了！' : '再試一次！';
