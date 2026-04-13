@@ -1367,7 +1367,7 @@ function renderLessonSelect() {
     d.className = 'progress-dot';
     d.textContent = i;
     const saved = getSavedProgress();
-    if (saved.completed.includes(i)) d.classList.add('completed');
+    // All lessons open
     if (i === curLesson) d.classList.add('current');
     dotsEl.appendChild(d);
   }
@@ -1384,7 +1384,7 @@ function renderLessonSelect() {
   for (let i = 1; i <= 8; i++) {
     const card = document.createElement('div');
     card.className = 'lesson-card';
-    if (saved.completed.includes(i)) card.classList.add('completed');
+    // All lessons open - no lock
     card.onclick = () => startLesson(i);
     card.innerHTML = `
       <div class="check-icon">✅</div>
@@ -1719,7 +1719,7 @@ function showResult(ok) {
   document.getElementById('m-sub').textContent = ok ? '你成功完成任務了！' : `還差一點點！（第 ${attempts} 次）`;
 
   if (ok) {
-    saveProgress(curLesson);
+    // Progress not tracked
     attempts = 0;
     document.getElementById('m-btn').textContent = curLesson < 8 ? '下一課 ➡' : '完成！🏆';
     document.getElementById('m-btn').className = 'm-btn next';
