@@ -1120,7 +1120,7 @@ function renderLessonSelect() {
 }
 
 // ---- LESSON START ----
-function startLesson(n) {
+function startLesson(n) { console.log("startLesson called with n=" + n);
   curLesson = n;
   program = [];
   lessonDone = false;
@@ -1155,7 +1155,7 @@ function startLesson(n) {
 
 function renderPalette(n) {
   const pal = document.getElementById('palette-panel');
-  const blocks = LESSONS[n].palette;
+  console.log("LESSONS[" + n + "].palette =" + JSON.stringify(LESSONS[n].palette)); const blocks = LESSONS[n].palette;
   const cats = { fly: [], move: [], ctrl: [] };
   blocks.forEach(b => {
     if (['takeoff','land'].includes(b)) cats.fly.push(b);
@@ -1239,7 +1239,7 @@ function clearWorkspace() {
   updateWsCount();
 }
 
-function addBlock(type) {
+function addBlock(type) { console.log("addBlock called with type=" + type);
   const empty = document.getElementById('ws-empty');
   if (empty) empty.remove();
 
@@ -1303,7 +1303,7 @@ function runProgram() {
 
   const blocks = document.querySelectorAll('#ws-blocks .program-block');
   program = Array.from(blocks).map(b => b.dataset.type);
-  if (!program.length) { alert('請先加入積木！'); return; }
+  console.log("runProgram: program.length=" + program.length); if (!program.length) { alert('請先加入積木！'); return; }
 
   // Highlight first
   document.querySelectorAll('#ws-blocks .program-block').forEach(b => { b.classList.remove('running','done'); });
@@ -1363,13 +1363,13 @@ function moveBwd() {
 }
 
 // ---- GOAL CHECK ----
-function checkGoal() {
+function checkGoal() { console.log("checkGoal called: isFlying=" + isFlying);
   document.getElementById('prog-bar').style.width = '100%';
   document.getElementById('prog-pct').textContent = '100%';
   document.querySelectorAll('#ws-blocks .program-block').forEach(b => b.classList.remove('running'));
 
   const s = getState();
-  if (LESSONS[curLesson].chk(s)) {
+  const goalResult = LESSONS[curLesson].chk(s); console.log("goal check result=" + goalResult); if (goalResult) {
     lessonDone = true;
     setTimeout(() => showResult(true), 500);
   }
@@ -1391,7 +1391,7 @@ function getState() {
 }
 
 // ---- RESULT ----
-function showResult(ok) {
+function showResult(ok) { console.log("showResult called with ok=" + ok);
   const modal = document.getElementById('result-modal');
   document.getElementById('m-emoji').textContent = ok ? '🎉' : '😢';
   document.getElementById('m-title').textContent = ok ? '太棒了！' : '再試一次！';
@@ -1412,7 +1412,7 @@ function showResult(ok) {
     updateHintBtn();
   }
 
-  modal.classList.add('active');
+  console.log("Adding active class to modal"); modal.classList.add('active');
 }
 
 function handleModalBtn() {
