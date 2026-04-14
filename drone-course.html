@@ -2270,7 +2270,7 @@ function initFreeFlight() {
   document.getElementById('crash-overlay').classList.remove('active');
   document.getElementById('free-drone').style.opacity = '1';
   buildFreeObstacles();
-  renderFreeObstacles();
+  createObstacleElements();
   updateFreeHUD();
   if (freeAnimFrame) cancelAnimationFrame(freeAnimFrame);
   freeLoop();
@@ -2312,7 +2312,8 @@ function buildFreeObstacles() {
   freeObstacles.sort((a, b) => a.depth - b.depth);
 }
 
-function renderFreeObstacles() {
+// Create obstacle DOM elements once
+function createObstacleElements() {
   const container = document.getElementById('free-obstacles');
   if (!container) return;
   container.innerHTML = '';
@@ -2320,13 +2321,9 @@ function renderFreeObstacles() {
     if (obs.type === 'building' || obs.type === 'tree' || obs.type === 'mountain') {
       const el = document.createElement('div');
       el.className = 'building-obj';
-      el.style.fontSize = '0';
-      el.style.width = obs.w + 'px';
-      el.style.height = obs.h + 'px';
       el.style.display = 'flex';
       el.style.alignItems = 'center';
       el.style.justifyContent = 'center';
-      el.style.fontSize = Math.max(12, obs.h * 0.5) + 'px';
       el.textContent = obs.icon;
       container.appendChild(el);
       obs.el = el;
@@ -2334,19 +2331,49 @@ function renderFreeObstacles() {
       const el = document.createElement('div');
       el.className = 'cloud-obj';
       el.textContent = obs.icon;
-      el.style.fontSize = Math.max(14, obs.h) + 'px';
       container.appendChild(el);
       obs.el = el;
     }
   }
 }
 
+// Update obstacle positions every frame (no DOM recreation)
+function updateObstaclePositions() {
+  for (const obs of freeObstacles) {
+    if (!obs.el) continue;
+    const t = Math.max(0, Math.min(1, 1 - (obs.depth / freeDepthMax)));
+    const scale = 0.15 + t * 1.85;
+    const pixelW = obs.w * scale;
+    const pixelH = obs.h * scale;
+    const topPct = 42 + t * 48;
+    const xPct = obs.laneX * 0.7 + 15;
+    const fontSize = Math.max(8, pixelH * 0.45);
+    const bottomPct = 100 - topPct;
+    if (obs.type === 'building' || obs.type === 'tree' || obs.type === 'mountain') {
+      obs.el.style.width = pixelW + 'px';
+      obs.el.style.height = pixelH + 'px';
+      obs.el.style.left = xPct + '%';
+      obs.el.style.bottom = bottomPct + '%';
+      obs.el.style.transform = 'translate(-50%, 0)';
+      obs.el.style.fontSize = fontSize + 'px';
+      obs.el.style.opacity = Math.min(1, 0.3 + t * 0.7);
+    } else {
+      obs.el.style.left = xPct + '%';
+      obs.el.style.top = topPct + '%';
+      obs.el.style.transform = 'translate(-50%, -50%)';
+      obs.el.style.fontSize = fontSize + 'px';
+      obs.el.style.opacity = Math.min(1, 0.4 + t * 0.5);
+    }
+  }
+}
+
+
 // ---- MAIN LOOP ----
 function freeLoop() {
   if (freeCrashed) return;
   freeAnimFrame = requestAnimationFrame(freeLoop);
   updateFreeFlight();
-  renderFreeObstacles();
+  updateObstaclePositions();
 }
 
 // ---- UPDATE ----
@@ -2467,6 +2494,7 @@ function freeTakeoff() {
   freeDist = 0;
   if (freeAnimFrame) cancelAnimationFrame(freeAnimFrame);
   buildFreeObstacles();
+  createObstacleElements();
   document.getElementById('crash-overlay').classList.remove('active');
   const drone = document.getElementById('free-drone');
   if (drone) { drone.classList.add('flying'); drone.style.opacity = '1'; }
