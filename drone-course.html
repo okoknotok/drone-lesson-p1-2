@@ -325,9 +325,6 @@
       min-width: 28px;
       text-align: center;
     }
-    .code-challenge {
-      margin-top: 8px;
-    }
     .challenge-tip {
       font-size: 0.7em;
       color: rgba(255,200,100,0.8);
@@ -465,15 +462,16 @@
     .stage-grid {
       position: absolute;
       bottom: 0;
-      left: -15%;
-      right: -15%;
-      height: 32%;
+      left: -20%;
+      right: -20%;
+      height: 40%;
       background:
-        repeating-linear-gradient(90deg, rgba(80,180,120,0.06) 0px, rgba(80,180,120,0.06) 1px, transparent 1px, transparent 10%),
-        repeating-linear-gradient(0deg, rgba(80,180,120,0.04) 0px, rgba(80,180,120,0.04) 1px, transparent 1px, transparent 14%);
-      transform: rotateX(55deg);
+        repeating-linear-gradient(90deg, rgba(80,180,120,0.12) 0px, rgba(80,180,120,0.12) 1px, transparent 1px, transparent 8%),
+        repeating-linear-gradient(0deg, rgba(80,180,120,0.08) 0px, rgba(80,180,120,0.08) 1px, transparent 1px, transparent 12%);
+      transform: rotateX(60deg);
       transform-origin: center top;
       pointer-events: none;
+      z-index: 3;
     }
     /* Drone 3D shadow on ground */
     .stage-drone-shadow {
@@ -1003,10 +1001,11 @@
     .stage-sky {
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse 120% 50% at 50% 100%, rgba(20,70,45,0.35) 0%, transparent 65%),
-                  linear-gradient(180deg, #030810 0%, #081525 50%, #0f2840 100%);
-      transform: rotateX(25deg);
+      background: radial-gradient(ellipse 150% 60% at 50% 100%, rgba(20,70,45,0.5) 0%, transparent 70%),
+                  linear-gradient(180deg, #020810 0%, #061525 40%, #0a2040 100%);
+      transform: rotateX(30deg);
       transform-origin: center bottom;
+      z-index: 1;
     }
     .stage-stars {
       position: absolute;
@@ -1024,14 +1023,15 @@
     .stage-ground {
       position: absolute;
       bottom: 0;
-      left: -15%;
-      right: -15%;
-      height: 32%;
-      background: linear-gradient(180deg, rgba(15,55,35,0.95) 0%, rgba(8,35,22,0.98) 100%);
-      transform: rotateX(55deg);
+      left: -20%;
+      right: -20%;
+      height: 40%;
+      background: linear-gradient(180deg, rgba(15,55,35,0.98) 0%, rgba(8,35,22,1) 100%);
+      transform: rotateX(60deg);
       transform-origin: center top;
-      border-top: 2px solid rgba(80,180,120,0.12);
-      box-shadow: 0 -15px 50px rgba(0,0,0,0.6);
+      border-top: 3px solid rgba(80,180,120,0.2);
+      box-shadow: 0 -20px 60px rgba(0,0,0,0.7);
+      z-index: 2;
     }
     .stage-sun {
       position: absolute;
@@ -1448,7 +1448,7 @@
       <div class="stage-sun"></div>
       <div class="stage-ground"></div>
       <div class="stage-drone-shadow" id="free-drone-shadow"></div>
-      <div class="stage-drone" id="free-drone" style="bottom:auto;top:40%;left:50%;transform:translate(-50%,0) scale(1);">🚁</div>
+      <div class="stage-drone" id="free-drone" style="bottom:auto;top:40%;left:50%;transform:translate(-50%,0) scale(1);z-index:10;position:absolute;">🚁</div>
     </div>
     <div class="free-controls-panel">
       <div class="alt-meter">
