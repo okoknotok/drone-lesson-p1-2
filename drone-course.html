@@ -61,6 +61,143 @@
       text-shadow: 0 0 30px rgba(100,200,255,1), 0 0 60px rgba(100,200,255,0.5);
       filter: drop-shadow(0 12px 24px rgba(0,0,0,0.6));
     }
+    /* ===== CUTE DRONE CHARACTER ===== */
+    .drone-char {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .drone-body {
+      position: absolute;
+      width: 24px;
+      height: 16px;
+      background: linear-gradient(135deg, #4fc3f7 0%, #0288d1 100%);
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3), inset 0 -2px 4px rgba(0,0,0,0.2);
+      z-index: 2;
+    }
+    .drone-eye {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: white;
+      border-radius: 50%;
+      top: 4px;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .drone-eye.left { left: 4px; }
+    .drone-eye.right { right: 4px; }
+    .drone-pupil {
+      width: 4px;
+      height: 4px;
+      background: #222;
+      border-radius: 50%;
+      transition: all 0.1s;
+    }
+    .drone-mouth {
+      position: absolute;
+      bottom: 2px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      font-size: 6px;
+      line-height: 1;
+    }
+    .drone-prop {
+      position: absolute;
+      width: 22px;
+      height: 5px;
+      background: linear-gradient(90deg, #81d4fa 0%, #4fc3f7 50%, #81d4fa 100%);
+      border-radius: 3px;
+      top: 50%;
+      margin-top: -2.5px;
+      z-index: 1;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+    .drone-prop::after {
+      content: '';
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      background: #0288d1;
+      border-radius: 50%;
+      top: 0;
+      left: 50%;
+      margin-left: -2.5px;
+    }
+    .drone-prop.prop-h { transform: rotate(90deg); }
+    @keyframes prop-spin-h { from { transform: rotate(90deg); } to { transform: rotate(450deg); } }
+    @keyframes prop-spin-v { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .drone-char.flying .drone-prop.prop-h { animation: prop-spin-h 0.12s linear infinite; }
+    .drone-char.flying .drone-prop.prop-v { animation: prop-spin-v 0.12s linear infinite; }
+    /* Drone expressions */
+    .drone-char .drone-mouth { transition: all 0.2s; }
+    .drone-char.happy .drone-mouth::before { content: '‿'; }
+    .drone-char.sad .drone-mouth::before { content: '︵'; }
+    .drone-char.excited .drone-mouth::before { content: '◡'; }
+    .drone-char.excited .drone-eye { transform: scale(1.2); }
+    .drone-char.idle .drone-pupil { animation: blink 3s infinite; }
+    @keyframes blink { 0%,90%,100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
+    /* Drone LED light */
+    .drone-led {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #ef5350;
+      border-radius: 50%;
+      top: -1px;
+      left: 50%;
+      margin-left: -2px;
+      z-index: 4;
+      animation: led-blink 1s infinite alternate;
+    }
+    @keyframes led-blink { from { opacity: 0.4; } to { opacity: 1; box-shadow: 0 0 6px #ef5350; } }
+    /* Demo animation */
+    .demo-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      border-radius: 16px;
+    }
+    .demo-label {
+      color: white;
+      font-size: 1.1em;
+      font-weight: bold;
+      margin-bottom: 12px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    .demo-btn {
+      background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      padding: 10px 28px;
+      font-size: 1em;
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: 0 4px 15px rgba(255,107,107,0.4);
+      transition: transform 0.2s;
+    }
+    .demo-btn:hover { transform: scale(1.08); }
+    /* Preview drone (in demo mode) */
+    .preview-drone {
+      position: absolute;
+      z-index: 45;
+      transition: none !important;
+    }
+
     /* 3D obstacle style */
     .stage-obstacle {
       filter: drop-shadow(4px 4px 8px rgba(0,0,0,0.4));
@@ -742,7 +879,21 @@
     .back-btn-header:hover { background: rgba(255,255,255,0.2); }
     .course-header h2 { font-size: 1.15em; font-weight: 800; }
     .course-header .right-side { display: flex; align-items: center; gap: 12px; }
-    .attempt-badge {
+    
+    .demo-header-btn {
+      background: linear-gradient(135deg, #ab47bc, #7b1fa2);
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 0.85em;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform 0.2s;
+      margin-right: 8px;
+    }
+    .demo-header-btn:hover { transform: scale(1.1); }
+.attempt-badge {
       background: linear-gradient(135deg, #ff6b6b, #ff8e53);
       padding: 4px 14px;
       border-radius: 20px;
@@ -1511,6 +1662,7 @@
       <h2 id="lesson-title-display">第1課：起飛！</h2>
     </div>
     <div class="right-side">
+      <button class="demo-header-btn" id="demo-btn" onclick="showDemoOverlay(curLesson)">👀 示範</button>
       <span class="attempt-badge" id="attempt-badge">嘗試 0 次</span>
       <div class="progress-wrap">
         <div class="progress-bar-bg"><div class="progress-bar-fill" id="prog-bar"></div></div>
@@ -1546,7 +1698,17 @@
       <div class="stage-sun"></div>
       <div class="stage-ground"></div>
       <div class="stage-hud" id="stage-hud">❌ 障礙物</div>
-      <div class="stage-drone" id="stage-drone" style="bottom:38%;left:50%;transform:translate(-50%,0);">🚁</div>
+      <div class="stage-drone" id="stage-drone" style="bottom:38%;left:50%;transform:translate(-50%,0);">
+  <div class="drone-char idle">
+    <div class="drone-prop prop-h"></div>
+    <div class="drone-prop prop-v"></div>
+    <div class="drone-body"></div>
+    <div class="drone-led"></div>
+    <div class="drone-eye left"><div class="drone-pupil"></div></div>
+    <div class="drone-eye right"><div class="drone-pupil"></div></div>
+    <div class="drone-mouth"></div>
+  </div>
+</div>
       <div class="task-banner" id="task-banner">按下執行，讓無人機起飛！</div>
     </div>
   </div>
@@ -1588,7 +1750,17 @@
         <button class="crash-restart" onclick="freeRestart()">🔄 再試一次</button>
       </div>
       <!-- Drone (third-person view: bottom center) -->
-      <div class="stage-drone" id="free-drone" style="bottom:8%;left:50%;transform:translate(-50%,0) scale(1.4);z-index:50;position:absolute;">🚁</div>
+      <div class="stage-drone" id="free-drone">
+  <div class="drone-char idle">
+    <div class="drone-prop prop-h"></div>
+    <div class="drone-prop prop-v"></div>
+    <div class="drone-body"></div>
+    <div class="drone-led"></div>
+    <div class="drone-eye left"><div class="drone-pupil"></div></div>
+    <div class="drone-eye right"><div class="drone-pupil"></div></div>
+    <div class="drone-mouth"></div>
+  </div>
+</div>
     </div>
     <div class="free-controls-panel">
       <div class="alt-meter">
@@ -1782,6 +1954,7 @@ function startLesson(n) {
   resetHintBtn();
   hideHintToast();
   showCourse();
+  setTimeout(() => showDemoOverlay(n), 400);
 }
 
 function renderPalette(n) {
@@ -1955,7 +2128,13 @@ function updateDrone() {
   d.style.bottom = droneY + '%';
   d.style.setProperty('--rot', droneAngle + 'deg');
   d.style.transform = `translate(-50%,0) rotate(${droneAngle}deg)`;
-  d.classList.toggle('flying', isFlying);
+  const dc = d.querySelector('.drone-char');
+  if (dc) {
+    dc.classList.toggle('flying', isFlying);
+    dc.classList.toggle('idle', !isFlying);
+    dc.classList.toggle('happy', lessonDone);
+    dc.classList.toggle('excited', isFlying && !lessonDone);
+  }
 }
 
 function addTrail() {
@@ -2064,6 +2243,87 @@ function getState() {
 }
 
 // ---- RESULT ----
+
+// ---- DEMO / PREVIEW ----
+function showDemoOverlay(lessonNum) {
+  const overlay = document.getElementById('demo-overlay');
+  if (overlay) return;
+  const L = LESSONS[lessonNum];
+  const o = document.createElement('div');
+  o.className = 'demo-overlay';
+  o.id = 'demo-overlay';
+  o.innerHTML = '<div class=demo-label>看看這個怎麼做 👀</div><button class=demo-btn onclick="playDemo('+lessonNum+');">▶ 播放示範</button>';
+  const stage = document.getElementById('stage-panel');
+  stage.style.position = 'relative';
+  stage.appendChild(o);
+}
+
+function playDemo(lessonNum) {
+  const overlay = document.getElementById('demo-overlay');
+  if (overlay) overlay.remove();
+  const L = LESSONS[lessonNum];
+  const drone = document.getElementById('stage-drone');
+  const dc = drone ? drone.querySelector('.drone-char') : null;
+  if (dc) { dc.classList.add('excited'); dc.classList.remove('idle','happy'); }
+  droneX = L.start.x;
+  droneY = L.start.y;
+  droneAngle = L.start.a;
+  isFlying = true;
+  drone.style.left = droneX + '%';
+  drone.style.bottom = droneY + '%';
+  drone.style.transform = 'translate(-50%,0) rotate(' + droneAngle + 'deg)';
+  const seq = getDemoSeq(lessonNum);
+  let step = 0;
+  function nextStep() {
+    if (step >= seq.length) {
+      if (dc) { dc.classList.remove('excited'); dc.classList.add('happy'); }
+      setTimeout(function() {
+        if (dc) { dc.classList.remove('happy'); dc.classList.add('idle'); }
+        isFlying = false;
+        droneX = L.start.x;
+        droneY = L.start.y;
+        droneAngle = L.start.a;
+        drone.style.left = droneX + '%';
+        drone.style.bottom = droneY + '%';
+        drone.style.transform = 'translate(-50%,0) rotate(' + droneAngle + 'deg)';
+      }, 800);
+      return;
+    }
+    const cmd = seq[step++];
+    if (cmd === 'fwd') {
+      var r = (droneAngle - 90) * Math.PI / 180;
+      droneX += Math.cos(r) * 15;
+      droneY += Math.sin(r) * 15;
+      droneX = Math.max(3, Math.min(97, droneX));
+      droneY = Math.max(28, Math.min(82, droneY));
+    } else if (cmd === 'left') {
+      droneAngle = (droneAngle - 90 + 360) % 360;
+    } else if (cmd === 'right') {
+      droneAngle = (droneAngle + 90) % 360;
+    }
+    drone.style.left = droneX + '%';
+    drone.style.bottom = droneY + '%';
+    drone.style.transform = 'translate(-50%,0) rotate(' + droneAngle + 'deg)';
+    setTimeout(nextStep, 450);
+  }
+  nextStep();
+}
+
+function getDemoSeq(lesson) {
+  switch(lesson) {
+    case 1: return ['fwd','fwd','fwd','fwd'];
+    case 2: return ['fwd','left','fwd','left','fwd','left','fwd','left'];
+    case 3: return ['fwd','fwd','fwd','fwd','fwd','fwd','fwd','fwd','fwd','fwd','fwd'];
+    case 4: return ['fwd','wait'];
+    case 5: return ['fwd','fwd','fwd','fwd','fwd','fwd','fwd','fwd','fwd','left','fwd','fwd','fwd','fwd','fwd'];
+    case 6: return ['fwd','fwd','fwd'];
+    case 7: return ['fwd','fwd','fwd','fwd','fwd','fwd','fwd','fwd','fwd','left','fwd','fwd','fwd','fwd','fwd','fwd'];
+    case 8: return ['fwd','fwd','fwd','fwd','fwd','fwd','left','fwd','fwd','fwd','fwd'];
+    default: return [];
+  }
+}
+
+
 function showResult(ok) { 
   try { initAudio(); if (ok) try { playSuccess(); } catch(e) {} else try { playFail(); } catch(e) {} } catch(e) {}
   const modal = document.getElementById('result-modal');
@@ -2456,7 +2716,12 @@ function freeTakeoff() {
   createObstacleElements();
   document.getElementById('crash-overlay').classList.remove('active');
   const drone = document.getElementById('free-drone');
-  if (drone) { drone.classList.add('flying'); drone.style.opacity = '1'; }
+  if (drone) {
+    drone.classList.add('flying');
+    drone.style.opacity = '1';
+    const dc = drone.querySelector('.drone-char');
+    if (dc) { dc.classList.add('flying','excited'); dc.classList.remove('idle'); }
+  }
   freeLoop();
 }
 
@@ -2539,7 +2804,7 @@ function freeReset() {
   if (freeAnimFrame) cancelAnimationFrame(freeAnimFrame);
   document.getElementById('crash-overlay').classList.remove('active');
   const drone = document.getElementById('free-drone');
-  if (drone) { drone.classList.remove('flying'); drone.style.opacity = '1'; drone.style.left = '50%'; drone.style.transform = 'translate(-50%,0) scale(1.4)'; }
+  if (drone) { drone.classList.remove('flying'); drone.style.opacity = '1'; drone.style.left = '50%'; drone.style.bottom = '8%'; drone.style.transform = 'translate(-50%,0) scale(1.4)'; var dc = drone.querySelector('.drone-char'); if (dc) { dc.classList.remove('flying','excited','happy'); dc.classList.add('idle'); } }
   document.getElementById('free-obstacles').innerHTML = '';
   document.getElementById('free-bullets').innerHTML = '';
 }
@@ -2598,6 +2863,9 @@ function cleanupKeyboard() {
 // ---- BOOT ----
 
 init();
+
+
+
 
 
 
