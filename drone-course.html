@@ -1497,7 +1497,6 @@
 <div id="screen-lessons" class="screen">
   <div class="lessons-header">
     <h2>📚 選擇課題</h2>
-    <p>完成課題，解鎖下一個！</p>
   </div>
   <div class="progress-overview" id="progress-dots"></div>
   <div class="lesson-grid" id="lesson-grid"></div>
@@ -1723,8 +1722,6 @@ function renderLessonSelect() {
     const d = document.createElement('div');
     d.className = 'progress-dot';
     d.textContent = i;
-    const saved = getSavedProgress();
-    // All lessons open
     if (i === curLesson) d.classList.add('current');
     dotsEl.appendChild(d);
   }
@@ -1741,7 +1738,6 @@ function renderLessonSelect() {
   for (let i = 1; i <= 8; i++) {
     const card = document.createElement('div');
     card.className = 'lesson-card';
-    // All lessons open - no lock
     card.onclick = () => startLesson(i);
     card.innerHTML = `
       <div class="check-icon">✅</div>
@@ -2174,8 +2170,7 @@ function getSavedProgress() {
 }
 
 function saveProgress(lesson) {
-  const s = getSavedProgress();
-  if (!s.completed.includes(lesson)) { s.completed.push(lesson); localStorage.setItem('drone-course-progress', JSON.stringify(s)); }
+  // All lessons open - no locking
 }
 
 // ================================================================
