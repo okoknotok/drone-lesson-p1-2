@@ -286,7 +286,1069 @@
 
 
 
-    /*<div class="floating-icons" style="top:15%;left:8%;animation-delay:0s">🚀</div>
+    /* Teaching panel in free flight */
+    .teach-panel {
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 10px;
+      margin-top: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .teach-title {
+      font-size: 0.75em;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 6px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .key-guide {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      font-size: 0.7em;
+      color: rgba(255,255,255,0.6);
+    }
+    .key-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.05);
+      padding: 3px 6px;
+      border-radius: 6px;
+    }
+    .key-cap {
+      background: rgba(255,255,255,0.15);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+      min-width: 28px;
+      text-align: center;
+    }
+    .code-challenge {
+      margin-top: 8px;
+    }
+    .challenge-tip {
+      font-size: 0.7em;
+      color: rgba(255,200,100,0.8);
+      background: rgba(255,200,100,0.1);
+      padding: 6px 8px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .program-blocks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      min-height: 36px;
+      padding: 6px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .program-blocks .program-block {
+      font-size: 0.7em;
+      padding: 4px 8px;
+    }
+    .run-code-btn {
+      width: 100%;
+      padding: 6px;
+      background: linear-gradient(135deg, #43a047, #2e7d32);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.8em;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .run-code-btn:active { transform: scale(0.97); }
+    /* Position display */
+    .pos-val {
+      font-size: 0.7em;
+      color: rgba(100,200,255,0.8);
+      font-family: monospace;
+      margin-top: 4px;
+    }
+    /* Key visual indicators */
+    .key-indicators {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      margin-top: 6px;
+    }
+    .key-ind {
+      width: 26px;
+      height: 26px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8em;
+      transition: all 0.1s;
+    }
+    .key-ind.pressed {
+      background: rgba(100,200,255,0.6);
+      box-shadow: 0 0 10px rgba(100,200,255,0.8);
+      transform: scale(1.1);
+    }
+    /* Free palette in teach panel */
+    .free-palette-row {
+      margin: 6px 0;
+    }
+    #free-palette {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    #free-palette .palette-block {
+      font-size: 0.65em;
+      padding: 4px 6px;
+      cursor: pointer;
+    }
+    #free-palette .palette-block .icon {
+      font-size: 1em;
+    }
+    #free-palette .palette-block .lbl {
+      font-size: 0.8em;
+    }
+    /* Stage 3D enhancements */
+    .stage-panel {
+      perspective: 1200px;
+      overflow: hidden;
+    }
+    .stage-sky {
+      background: linear-gradient(180deg,
+        #050a15 0%,
+        #0a1628 30%,
+        #102040 60%,
+        #1a3050 100%) !important;
+    }
+    .stage-ground {
+      background: linear-gradient(180deg,
+        #1a5a3a 0%,
+        #0d3d24 50%,
+        #0a2a1a 100%) !important;
+      box-shadow: inset 0 20px 60px rgba(0,0,0,0.5) !important;
+    }
+    .stage-drone {
+      text-shadow: 0 0 25px rgba(100,200,255,0.9), 0 0 50px rgba(100,200,255,0.4) !important;
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6)) !important;
+      transition: transform 0.15s ease-out, text-shadow 0.3s !important;
+    }
+    .stage-drone.flying {
+      text-shadow: 0 0 40px rgba(100,200,255,1), 0 0 80px rgba(100,200,255,0.6), 0 0 120px rgba(100,200,255,0.3) !important;
+      filter: drop-shadow(0 15px 30px rgba(0,0,0,0.7)) !important;
+      animation: droneHover 0.8s ease-in-out infinite !important;
+    }
+    @keyframes droneHover {
+      0%, 100% { transform: translate(-50%, 0) scale(1); }
+      50% { transform: translate(-50%, -5px) scale(1.05); }
+    }
+    /* Stage obstacle 3D */
+    .stage-obstacle {
+      filter: drop-shadow(4px 8px 12px rgba(0,0,0,0.5)) !important;
+      transform: translate(-50%, 0) !important;
+    }
+    /* Trail glow */
+    .trail-dot {
+      box-shadow: 0 0 8px rgba(100,200,255,0.8), 0 0 15px rgba(100,200,255,0.4) !important;
+    }
+    /* Confetti burst */
+    .confetti-piece {
+      box-shadow: 0 0 6px currentColor !important;
+    }
+
+
+    /* 3D grid on ground */
+    .stage-grid {
+      position: absolute;
+      bottom: 0;
+      left: -15%;
+      right: -15%;
+      height: 32%;
+      background:
+        repeating-linear-gradient(90deg, rgba(80,180,120,0.06) 0px, rgba(80,180,120,0.06) 1px, transparent 1px, transparent 10%),
+        repeating-linear-gradient(0deg, rgba(80,180,120,0.04) 0px, rgba(80,180,120,0.04) 1px, transparent 1px, transparent 14%);
+      transform: rotateX(55deg);
+      transform-origin: center top;
+      pointer-events: none;
+    }
+    /* Drone 3D shadow on ground */
+    .stage-drone-shadow {
+      position: absolute;
+      bottom: 6%;
+      left: 50%;
+      width: 36px;
+      height: 8px;
+      background: radial-gradient(ellipse, rgba(0,0,0,0.6) 0%, transparent 70%);
+      border-radius: 50%;
+      transform: translate(-50%, 0);
+      pointer-events: none;
+      transition: all 0.15s ease-out;
+    }
+/* ===== SCREEN SYSTEM ===== */
+    .screen { display: none; }
+    .screen.active { display: flex; }
+
+    /* ===== WELCOME SCREEN ===== */
+    #screen-welcome {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #0d1b2a 0%, #1b2f4a 40%, #2d3f5f 100%);
+      color: white;
+      text-align: center;
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Animated starfield background */
+    #screen-welcome .stars {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    #screen-welcome .star {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 3s ease-in-out infinite;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.5); }
+    }
+    .welcome-content { position: relative; z-index: 2; }
+    .welcome-drone {
+      font-size: 9em;
+      animation: welcomeDrone 3s ease-in-out infinite;
+      filter: drop-shadow(0 20px 40px rgba(102,126,234,0.5));
+    }
+    @keyframes welcomeDrone {
+      0%, 100% { transform: translateY(0) rotate(-3deg) scale(1); }
+      50% { transform: translateY(-30px) rotate(3deg) scale(1.05); }
+    }
+    .welcome-title {
+      font-size: 3.2em;
+      font-weight: 900;
+      margin: 15px 0 10px;
+      background: linear-gradient(135deg, #667eea, #a855f7, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: none;
+    }
+    .welcome-subtitle {
+      font-size: 1.3em;
+      opacity: 0.85;
+      margin-bottom: 40px;
+      font-weight: 600;
+    }
+    .welcome-buttons { display: flex; flex-direction: column; gap: 15px; align-items: center; }
+    .welcome-btn {
+      padding: 18px 70px;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.3em;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: inherit;
+    }
+    .welcome-btn.primary {
+      background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+      color: white;
+      box-shadow: 0 8px 30px rgba(255,107,107,0.4);
+    }
+    .welcome-btn.primary:hover { transform: translateY(-4px) scale(1.05); box-shadow: 0 15px 40px rgba(255,107,107,0.5); }
+    .welcome-btn.secondary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+      box-shadow: 0 8px 30px rgba(102,126,234,0.4);
+      font-size: 1.1em;
+      padding: 14px 50px;
+    }
+    .welcome-btn.secondary:hover { transform: translateY(-3px); }
+    .floating-icons {
+      position: absolute;
+      font-size: 2.5em;
+      opacity: 0.2;
+      animation: floatIcon 12s ease-in-out infinite;
+    }
+    @keyframes floatIcon {
+      0%, 100% { transform: translateY(0) rotate(0); }
+      50% { transform: translateY(-25px) rotate(10deg); }
+    }
+
+    /* ===== LESSON SELECT ===== */
+    #screen-lessons {
+      flex-direction: column;
+      align-items: center;
+      padding: 35px 20px;
+      background: linear-gradient(180deg, #1a2a3a 0%, #0d1b2a 100%);
+      min-height: 100vh;
+    }
+    .lessons-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .lessons-header h2 {
+      color: white;
+      font-size: 2.2em;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+    .lessons-header p {
+      color: rgba(255,255,255,0.6);
+      font-size: 1em;
+    }
+    .progress-overview {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 25px;
+    }
+    .progress-dot {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      border: 3px solid rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85em;
+      font-weight: 800;
+      color: rgba(255,255,255,0.4);
+      transition: all 0.3s;
+    }
+    .progress-dot.completed {
+      background: linear-gradient(135deg, #43a047, #66bb6a);
+      border-color: #43a047;
+      color: white;
+    }
+    .progress-dot.current {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-color: var(--accent);
+      color: white;
+      animation: pulseDot 1.5s ease-in-out infinite;
+    }
+    @keyframes pulseDot {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(102,126,234,0.5); }
+      50% { box-shadow: 0 0 0 8px rgba(102,126,234,0); }
+    }
+    .lesson-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 18px;
+      width: 100%;
+      max-width: 950px;
+    }
+    .lesson-card {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      padding: 22px 18px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .lesson-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transform: scaleX(0);
+      transition: transform 0.3s;
+    }
+    .lesson-card:hover {
+      transform: translateY(-8px);
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(102,126,234,0.5);
+    }
+    .lesson-card:hover::before { transform: scaleX(1); }
+    .lesson-card .emoji { font-size: 2.8em; margin-bottom: 10px; }
+    .lesson-card h3 { color: white; font-weight: 800; margin-bottom: 6px; font-size: 1.1em; }
+    .lesson-card p { color: rgba(255,255,255,0.5); font-size: 0.85em; line-height: 1.3; }
+    .lesson-card .tag {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.75em;
+      font-weight: 700;
+      margin-top: 10px;
+    }
+    .lesson-card .tag.practice { background: linear-gradient(135deg, #fb8c00, #ffa726); }
+    .lesson-card .tag.challenge { background: linear-gradient(135deg, #d81b60, #f06292); }
+    .lesson-card .check-icon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 1.3em;
+      display: none;
+    }
+    .lesson-card.completed .check-icon { display: block; }
+    .back-btn {
+      margin-top: 25px;
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.2);
+      color: white;
+      padding: 10px 30px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 0.95em;
+      font-weight: 600;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.2); }
+
+    /* ===== COURSE SCREEN ===== */
+    #screen-course {
+      flex-direction: column;
+      height: 100vh;
+      background: var(--bg-dark);
+    }
+    .course-header {
+      background: linear-gradient(90deg, #162232, #1a2d42);
+      color: white;
+      padding: 10px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid rgba(102,126,234,0.25);
+      flex-shrink: 0;
+    }
+    .course-header .header-left { display: flex; align-items: center; gap: 14px; }
+    .back-btn-header {
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.2);
+      color: white;
+      padding: 7px 18px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9em;
+      font-weight: 600;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .back-btn-header:hover { background: rgba(255,255,255,0.2); }
+    .course-header h2 { font-size: 1.15em; font-weight: 800; }
+    .course-header .right-side { display: flex; align-items: center; gap: 12px; }
+    .attempt-badge {
+      background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      font-weight: 700;
+      display: none;
+    }
+    .attempt-badge.visible { display: inline; }
+    .progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .progress-bar-bg {
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      width: 180px;
+      height: 18px;
+      overflow: hidden;
+      border: 2px solid rgba(255,255,255,0.15);
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #a855f7, #ec4899);
+      border-radius: 20px;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+    .progress-pct { font-size: 0.85em; font-weight: 700; color: rgba(255,255,255,0.7); }
+
+    .course-body { flex: 1; display: flex; overflow: hidden; }
+
+    /* ===== BLOCK PALETTE (LEFT) ===== */
+    .palette-panel {
+      width: 240px;
+      background: rgba(255,255,255,0.04);
+      border-right: 2px solid rgba(255,255,255,0.08);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    .palette-title {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      color: white;
+      padding: 12px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 1em;
+      flex-shrink: 0;
+    }
+    .palette-cat { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .palette-cat-name {
+      font-size: 0.72em;
+      color: rgba(255,255,255,0.4);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .palette-row { display: flex; flex-wrap: wrap; gap: 7px; }
+    .palette-block {
+      padding: 9px 12px;
+      border-radius: 12px;
+      font-size: 0.88em;
+      font-weight: 700;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      position: relative;
+      overflow: hidden;
+    }
+    .palette-block::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.1);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.2s;
+    }
+    .palette-block:hover::before { transform: scaleX(1); }
+    .palette-block:hover { transform: scale(1.08) rotate(-1deg); }
+    .palette-block:active { transform: scale(0.95); }
+    .palette-block .icon { font-size: 1.1em; position: relative; z-index: 1; }
+    .palette-block .lbl { position: relative; z-index: 1; }
+    .palette-block.takeoff { background: linear-gradient(135deg, rgba(0,188,212,0.2), rgba(0,188,212,0.1)); color: #00bcd4; border-color: var(--takeoff); }
+    .palette-block.land { background: linear-gradient(135deg, rgba(141,110,99,0.2), rgba(141,110,99,0.1)); color: #bcaaa4; border-color: var(--land); }
+    .palette-block.forward { background: linear-gradient(135deg, rgba(67,160,71,0.2), rgba(67,160,71,0.1)); color: #81c784; border-color: var(--forward); }
+    .palette-block.backward { background: linear-gradient(135deg, rgba(229,57,53,0.2), rgba(229,57,53,0.1)); color: #ef9a9a; border-color: var(--backward); }
+    .palette-block.left { background: linear-gradient(135deg, rgba(30,136,229,0.2), rgba(30,136,229,0.1)); color: #90caf9; border-color: var(--left); }
+    .palette-block.right { background: linear-gradient(135deg, rgba(142,36,170,0.2), rgba(142,36,170,0.1)); color: #ce93d8; border-color: var(--right); }
+    .palette-block.wait { background: linear-gradient(135deg, rgba(251,140,0,0.2), rgba(251,140,0,0.1)); color: #ffb74d; border-color: var(--wait); }
+    .palette-block.repeat { background: linear-gradient(135deg, rgba(216,27,96,0.2), rgba(216,27,96,0.1)); color: #f48fb1; border-color: var(--repeat); }
+    .palette-block.if { background: linear-gradient(135deg, rgba(255,87,34,0.2), rgba(255,87,34,0.1)); color: #ff8a65; border-color: var(--if); }
+
+    /* ===== WORKSPACE (CENTER) ===== */
+    .workspace-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: rgba(255,255,255,0.02);
+    }
+    .workspace-top {
+      background: rgba(255,255,255,0.05);
+      padding: 10px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      flex-shrink: 0;
+    }
+    .workspace-label {
+      font-weight: 800;
+      color: rgba(255,255,255,0.7);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.95em;
+    }
+    .workspace-count {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      font-weight: 700;
+    }
+    .workspace-blocks {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .workspace-empty {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.25);
+      font-size: 1.05em;
+      text-align: center;
+      padding: 30px;
+    }
+    .workspace-empty .empty-icon { font-size: 3.5em; margin-bottom: 12px; opacity: 0.3; }
+    .workspace-empty p { line-height: 1.5; }
+
+    /* PUZZLE-PIECE BLOCK STYLE */
+    .program-block {
+      background: rgba(255,255,255,0.95);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: grab;
+      font-size: 1em;
+      font-weight: 700;
+      border-left: 7px solid #ccc;
+      transition: all 0.2s;
+      position: relative;
+      animation: blockSlideIn 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    @keyframes blockSlideIn {
+      from { opacity: 0; transform: translateX(25px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    .program-block:hover { transform: translateX(4px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
+    .program-block .num {
+      background: rgba(0,0,0,0.08);
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.82em;
+      color: #555;
+      flex-shrink: 0;
+    }
+    .program-block .icon { font-size: 1.3em; }
+    .program-block .name { flex: 1; color: #333; }
+    .program-block .del {
+      color: #ff6b6b;
+      cursor: pointer;
+      font-size: 1em;
+      padding: 3px 6px;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+    .program-block .del:hover { background: rgba(255,107,107,0.1); }
+    .program-block.running {
+      animation: blockPulse 0.5s ease infinite;
+      box-shadow: 0 0 25px rgba(102,126,234,0.5);
+    }
+    @keyframes blockPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    .program-block.done { opacity: 0.5; }
+
+    .program-block.takeoff { border-left-color: var(--takeoff); }
+    .program-block.land { border-left-color: var(--land); }
+    .program-block.forward { border-left-color: var(--forward); }
+    .program-block.backward { border-left-color: var(--backward); }
+    .program-block.left { border-left-color: var(--left); }
+    .program-block.right { border-left-color: var(--right); }
+    .program-block.wait { border-left-color: var(--wait); }
+    .program-block.repeat { border-left-color: var(--repeat); }
+    .program-block.if { border-left-color: var(--if); }
+
+    /* WORKSPACE BOTTOM CONTROLS */
+    .workspace-controls {
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.05);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .ctrl-btn {
+      flex: 1;
+      padding: 12px 8px;
+      border: none;
+      border-radius: 14px;
+      font-size: 0.9em;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      font-family: inherit;
+    }
+    .ctrl-btn:hover { transform: translateY(-2px); }
+    .ctrl-btn.run { background: linear-gradient(135deg, #43a047, #66bb6a); color: white; box-shadow: 0 5px 15px rgba(67,160,71,0.3); }
+    .ctrl-btn.clear { background: linear-gradient(135deg, #ff6b6b, #ff8e53); color: white; box-shadow: 0 5px 15px rgba(255,107,107,0.3); }
+    .ctrl-btn.reset { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white; box-shadow: 0 5px 15px rgba(102,126,234,0.3); }
+    .ctrl-btn.hint { background: linear-gradient(135deg, #fb8c00, #ffa726); color: white; box-shadow: 0 5px 15px rgba(251,140,0,0.3); }
+    .ctrl-btn.showanswer { background: linear-gradient(135deg, #d81b60, #e91e63); color: white; box-shadow: 0 5px 15px rgba(216,27,96,0.3); }
+
+    /* ===== DRONE STAGE (RIGHT) ===== */
+    .stage-panel {
+      flex: 1.2;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, #0a1628 0%, #1e3a5f 40%, #3d6a8a 70%, #5a9fbf 100%);
+    }
+    .stage-sky {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 120% 50% at 50% 100%, rgba(20,70,45,0.35) 0%, transparent 65%),
+                  linear-gradient(180deg, #030810 0%, #081525 50%, #0f2840 100%);
+      transform: rotateX(25deg);
+      transform-origin: center bottom;
+    }
+    .stage-stars {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .stage-star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 4s ease-in-out infinite;
+    }
+    .stage-ground {
+      position: absolute;
+      bottom: 0;
+      left: -15%;
+      right: -15%;
+      height: 32%;
+      background: linear-gradient(180deg, rgba(15,55,35,0.95) 0%, rgba(8,35,22,0.98) 100%);
+      transform: rotateX(55deg);
+      transform-origin: center top;
+      border-top: 2px solid rgba(80,180,120,0.12);
+      box-shadow: 0 -15px 50px rgba(0,0,0,0.6);
+    }
+    .stage-sun {
+      position: absolute;
+      top: 8%;
+      right: 12%;
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(circle, #fff7a1, #ffd54f);
+      border-radius: 50%;
+      box-shadow: 0 0 40px rgba(255,213,79,0.6), 0 0 80px rgba(255,213,79,0.3);
+    }
+    .stage-cloud {
+      position: absolute;
+      background: rgba(255,255,255,0.7);
+      border-radius: 60px;
+      animation: cloudDrift linear infinite;
+    }
+    @keyframes cloudDrift {
+      from { transform: translateX(-150px); }
+      to { transform: translateX(calc(100vw + 150px)); }
+    }
+    .stage-drone {
+      position: absolute;
+      font-size: 4em;
+      transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      filter: drop-shadow(0 8px 15px rgba(0,0,0,0.4));
+      z-index: 10;
+    }
+    .stage-drone.flying { animation: droneHov 0.8s ease-in-out infinite; }
+    @keyframes droneHov {
+      0%, 100% { transform: translate(-50%, 0) rotate(var(--rot, 0deg)); }
+      50% { transform: translate(-50%, -8px) rotate(var(--rot, 0deg)); }
+    }
+    .stage-obstacle {
+      position: absolute;
+      font-size: 2.5em;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));
+      z-index: 5;
+    }
+    .stage-target {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border: 5px dashed #ffd700;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5em;
+      animation: targetPulse 1.5s ease-in-out infinite;
+      z-index: 5;
+    }
+    @keyframes targetPulse {
+      0%, 100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+      50% { transform: translate(-50%, 0) scale(1.1); opacity: 0.7; }
+    }
+    .trail-dot {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      background: rgba(255,200,0,0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 3;
+    }
+    .stage-hud {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(8px);
+      border-radius: 15px;
+      padding: 8px 14px;
+      font-size: 0.85em;
+      color: white;
+      font-weight: 600;
+      z-index: 20;
+      display: none;
+    }
+    .stage-hud.visible { display: block; }
+    .task-banner {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 10px 24px;
+      border-radius: 25px;
+      font-size: 0.95em;
+      font-weight: 700;
+      z-index: 20;
+      max-width: 85%;
+      text-align: center;
+      border: 2px solid rgba(255,255,255,0.15);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ===== HINT PANEL ===== */
+    
+    @keyframes hintSlideIn {
+      from { opacity: 0; transform: translateY(20px) translateX(-50%); }
+      to { opacity: 1; transform: translateY(0) translateX(-50%); }
+    }
+    .hint-toast {
+      animation: hintSlideIn 0.3s ease-out;
+    }
+
+    .hint-toast {
+      position: absolute;
+      bottom: 95px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #fb8c00, #ffa726);
+      color: white;
+      padding: 14px 24px;
+      border-radius: 18px;
+      font-size: 0.95em;
+      font-weight: 700;
+      max-width: 380px;
+      text-align: center;
+      z-index: 50;
+      display: none;
+      box-shadow: 0 6px 25px rgba(0,0,0,0.3);
+      border: 2px solid rgba(255,255,255,0.3);
+    }
+    .hint-toast.active { display: block; animation: toastPop 0.3s ease; }
+    .hint-toast.answer { background: linear-gradient(135deg, #d81b60, #e91e63); }
+    @keyframes toastPop {
+      from { opacity: 0; transform: translateX(-50%) scale(0.8); }
+      to { opacity: 1; transform: translateX(-50%) scale(1); }
+    }
+
+    /* ===== RESULT MODAL ===== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(6px);
+    }
+    .modal-overlay.active { display: flex; }
+    .result-modal {
+      background: white;
+      border-radius: 30px;
+      padding: 45px;
+      text-align: center;
+      max-width: 400px;
+      animation: modalBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 25px 80px rgba(0,0,0,0.4);
+    }
+    @keyframes modalBounce {
+      from { transform: scale(0.4); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .result-modal .m-emoji { font-size: 5em; margin-bottom: 15px; }
+    .result-modal .m-title { font-size: 1.9em; font-weight: 900; margin-bottom: 10px; color: #222; }
+    .result-modal .m-sub { color: #777; font-size: 1.05em; margin-bottom: 28px; }
+    .m-btn {
+      padding: 14px 45px;
+      border: none;
+      border-radius: 30px;
+      font-size: 1.15em;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .m-btn.next { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white; box-shadow: 0 8px 25px rgba(102,126,234,0.4); }
+    .m-btn.next:hover { transform: scale(1.06); }
+    .m-btn.retry { background: linear-gradient(135deg, #ff9800, #ffb74d); color: white; box-shadow: 0 8px 25px rgba(255,152,0,0.3); }
+
+    /* ===== CONFETTI ===== */
+    .confetti-piece {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      pointer-events: none;
+      z-index: 200;
+      animation: confettiFall 1.5s ease-out forwards;
+    }
+    @keyframes confettiFall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(400px) rotate(720deg); opacity: 0; }
+    }
+
+    /* ===== FREE FLIGHT ===== */
+    #screen-freeflight {
+      flex-direction: column;
+      height: 100vh;
+      background: var(--bg-dark);
+    }
+    .free-header {
+      background: linear-gradient(90deg, #162232, #1a2d42);
+      color: white;
+      padding: 10px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid rgba(102,126,234,0.25);
+      flex-shrink: 0;
+    }
+    .free-header h2 { font-size: 1.2em; font-weight: 800; }
+    .free-body { flex: 1; display: flex; overflow: hidden; }
+    
+    .free-drone {
+      text-shadow: 0 0 30px rgba(100,200,255,0.8);
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.5));
+    }
+    .free-drone.flying {
+      text-shadow: 0 0 50px rgba(100,200,255,1);
+      animation: freeDroneHover 2s ease-in-out infinite;
+    }
+    @keyframes freeDroneHover {
+      0%, 100% { transform: translate(-50%, 0); }
+      50% { transform: translate(-50%, -10px); }
+    }
+
+.free-stage {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      perspective: 900px;
+      perspective-origin: 50% 65%;
+      transform-style: preserve-3d;
+    }
+    .free-controls-panel {
+      width: 300px;
+      background: rgba(255,255,255,0.04);
+      border-left: 2px solid rgba(255,255,255,0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      gap: 18px;
+    }
+    .alt-meter {
+      background: rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 15px;
+      width: 100%;
+      text-align: center;
+    }
+    .alt-meter .alt-val { font-size: 2.5em; font-weight: 900; color: var(--accent); }
+    .alt-meter .alt-lbl { color: rgba(255,255,255,0.5); font-size: 0.85em; }
+    .dpad {
+      display: grid;
+      grid-template-columns: repeat(3, 60px);
+      grid-template-rows: repeat(3, 60px);
+      gap: 5px;
+    }
+    .dpad-btn {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-size: 1.5em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      box-shadow: 0 4px 15px rgba(102,126,234,0.3);
+    }
+    .dpad-btn:active { transform: scale(0.88); }
+    .dpad-btn.ctr { background: rgba(255,255,255,0.1); font-size: 1.1em; }
+    .dpad-btn.empty { background: transparent; }
+    .act-btns { display: flex; gap: 10px; }
+    .act-btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 20px;
+      font-size: 0.95em;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .act-btn.takeoff { background: linear-gradient(135deg, var(--takeoff), #0097a7); color: white; }
+    .act-btn.land-btn { background: linear-gradient(135deg, var(--land), #5d4037); color: white; }
+    .act-btn:hover { transform: scale(1.05); }
+    .speed-ctrl {
+      background: rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 12px 15px;
+      width: 100%;
+    }
+    .speed-ctrl label { display: block; text-align: center; color: rgba(255,255,255,0.6); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; }
+    .speed-ctrl input[type=range] { width: 100%; accent-color: var(--accent); }
+    .speed-num { text-align: center; font-size: 1.4em; font-weight: 900; color: var(--accent); margin-top: 5px; }
+    .free-reset-btn {
+      background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 25px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .free-reset-btn:hover { transform: scale(1.05); }
+  </style>
+</head>
+<body>
+
+<!-- ===================== WELCOME ===================== -->
+<div id="screen-welcome" class="screen active">
+  <div class="stars" id="welcome-stars"></div>
+  <div class="floating-icons" style="top:15%;left:8%;animation-delay:0s">🚀</div>
   <div class="floating-icons" style="top:25%;right:10%;animation-delay:-4s">⬆️</div>
   <div class="floating-icons" style="bottom:20%;left:12%;animation-delay:-8s">🔄</div>
   <div class="floating-icons" style="bottom:25%;right:8%;animation-delay:-3s">✈️</div>
@@ -386,7 +1448,7 @@
       <div class="stage-sun"></div>
       <div class="stage-ground"></div>
       <div class="stage-drone-shadow" id="free-drone-shadow"></div>
-      <div class="stage-drone" id="free-drone" style="bottom:auto;top:40%;left:50%;transform:translate(-50%,0);">🚁</div>
+      <div class="stage-drone" id="free-drone" style="bottom:auto;top:40%;left:50%;transform:translate(-50%,0) scale(1);">🚁</div>
     </div>
     <div class="free-controls-panel">
       <div class="alt-meter">
@@ -414,7 +1476,21 @@
         <div class="speed-num" id="spd-num">5</div>
       </div>
       <button class="free-reset-btn" onclick="freeReset()">🔄 重置</button>
+      <!-- Teaching: Key guide -->
+      <div class="teach-panel">
+        <div class="teach-title">⌨️ 鍵盤控制</div>
+        <div class="free-palette-row">
+          <div id="free-palette" class="free-palette"></div>
+        </div>
+        <div class="key-guide">
+          <div class="key-row"><span class="key-cap">W / ⬆️</span><span>向上飛</span></div>
+          <div class="key-row"><span class="key-cap">S / ⬇️</span><span>向下飛</span></div>
+          <div class="key-row"><span class="key-cap">A / ⬅️</span><span>向左飛</span></div>
+          <div class="key-row"><span class="key-cap">D / ➡️</span><span>向右飛</span></div>
+        </div>
       </div>
+  </div>
+</div>
 
 <script>
 // ================================================================
@@ -506,7 +1582,7 @@ function buildStageStars() {
 function showHome() { cleanupKeyboard(); hideAll(); document.getElementById('screen-welcome').classList.add('active'); }
 function showLessons() { cleanupKeyboard(); renderLessonSelect(); hideAll(); document.getElementById('screen-lessons').classList.add('active'); }
 function showCourse() { hideAll(); document.getElementById('screen-course').classList.add('active'); }
-function showFreeFlight() { freeReset(); freeZ = 50; cleanupKeyboard(); hideAll(); renderFreePalette(); document.getElementById('screen-freeflight').classList.add('active'); buildStageStars(); }
+function showFreeFlight() { freeReset(); freeZ = 50; cleanupKeyboard(); hideAll(); document.getElementById('screen-freeflight').classList.add('active'); buildStageStars(); }
 function hideAll() { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); }
 
 // ---- LESSON SELECT ----
@@ -974,68 +2050,39 @@ function saveProgress(lesson) {
 }
 
 // ---- FREE FLIGHT ----
-// 3D free flight: up/down = depth (z), left/right = strafe (x)
 function freeFly(dir) {
   if (!freeFlying) return;
   const step = freeSpeed * 0.8;
   freeLastDir = dir;
-  if (dir === 'up') { 
-    // Forward = deeper into screen = increase z, drone gets smaller
-    freeZ = Math.min(100, freeZ + step * 1.5);
-  }
-  if (dir === 'down') { 
-    // Backward = closer to camera = decrease z, drone gets bigger
-    freeZ = Math.max(0, freeZ - step * 1.5);
-  }
+  if (dir === 'up') { freeZ = Math.min(100, freeZ + step * 1.5); }
+  if (dir === 'down') { freeZ = Math.max(0, freeZ - step * 1.5); }
   if (dir === 'left') { freeX = Math.max(5, freeX - step); }
   if (dir === 'right') { freeX = Math.min(95, freeX + step); }
   updateFreeDrone3D();
 }
 
-function updateFreeDrone() {
-  updateFreeDrone3D();
-}
+function updateFreeDrone() { updateFreeDrone3D(); }
 
 function updateFreeDrone3D() {
   const d = document.getElementById('free-drone');
   if (!d) return;
-  
-  // 3D positioning
-  // freeX = left-right (strafe), 5-95%
-  // freeZ = depth (0=close/big, 100=far/small)
+  // 3D: freeX = strafe (5-95%), freeZ = depth (0=close/big, 100=far/small)
   const scale = 0.7 + (freeZ / 100) * 0.8; // 0.7 to 1.5
-  const yOffset = -20 + (freeZ / 100) * -30; // -20 (close) to -50 (far) - moves up as it goes deeper
-  
+  const topPct = 40 + (freeZ / 100) * 15; // 40% to 55% from top
   d.style.left = freeX + '%';
   d.style.bottom = 'auto';
-  d.style.top = `calc(40% + ${yOffset}%)`;
-  
-  // Scale and rotate based on depth and direction
-  let displayAngle = 90;
+  d.style.top = topPct + '%';
+  // Rotate based on last direction
+  let displayAngle = 0;
   if (freeLastDir === 'left') displayAngle = 180;
   else if (freeLastDir === 'right') displayAngle = 0;
   else if (freeLastDir === 'up') displayAngle = 90;
   else if (freeLastDir === 'down') displayAngle = 270;
-  
-  d.style.transform = `translate(-50%, 0) scale(${scale}) rotate(${displayAngle}deg)`;
-  
-  // Update altitude display (now represents depth)
+  d.style.transform = `translate(-50%,0) scale(${scale}) rotate(${displayAngle}deg)`;
   const altEl = document.getElementById('free-alt-val');
   if (altEl) altEl.textContent = Math.round(freeZ) + '%';
-  
-  // Update position display
   const posEl = document.getElementById('free-pos');
   if (posEl) posEl.textContent = `X:${Math.round(freeX)} Z:${Math.round(freeZ)}`;
-  
-  // Update drone shadow/reflection
-  const shadowEl = document.getElementById('free-drone-shadow');
-  if (shadowEl) {
-    shadowEl.style.left = freeX + '%';
-    const shadowScale = 0.3 + (1 - freeZ/100) * 0.4;
-    const shadowOpacity = 0.3 - (1 - freeZ/100) * 0.2;
-    shadowEl.style.transform = `translate(-50%, 0) scale(${shadowScale})`;
-    shadowEl.style.opacity = shadowOpacity;
-  }
 }
 
 let freeContinuousTimer = null;
@@ -1149,73 +2196,8 @@ function cleanupKeyboard() {
 }
 
 
-// ---- FREE FLIGHT CODING CHALLENGE ----
-</span><span class="lbl">${b.label}</span>`;
-    btn.onclick = () => addFreeCode(b.type);
-    pal.appendChild(btn);
-  });
-}
-
-catch(e) {} } catch(e) {}
-}
-
-freeCodeProgram.forEach((type, i) => {
-    const b = FREE_CODE_BLOCKS.find(x => x.type === type);
-    if (!b) return;
-    const el = document.createElement('div');
-    el.className = `program-block ${b.type}`;
-    el.innerHTML = `<span class="num">${i+1}</span><span class="icon">${b.icon}</span><span class="name">${b.label}</span><span class="del" onclick="delFreeCode(${i})">✖</span>`;
-    ws.appendChild(el);
-  });
-}
-
-);
-    if (type === 'takeoff') { freeTakeoff(); }
-    else if (type === 'land') { freeLand(); }
-    else if (type === 'forward') {
-      for (let s = 0; s < 5; s++) { freeFly('up'); await new Promise(r => setTimeout(r, 100)); }
-    }
-    else if (type === 'left') {
-      for (let s = 0; s < 4; s++) { freeFly('left'); await new Promise(r => setTimeout(r, 100)); }
-    }
-    else if (type === 'right') {
-      for (let s = 0; s < 4; s++) { freeFly('right'); await new Promise(r => setTimeout(r, 100)); }
-    }
-    else if (type === 'wait') { await new Promise(r => setTimeout(r, 1500)); }
-    await new Promise(r => setTimeout(r, 500));
-  }
-  document.querySelectorAll('#free-code-blocks .program-block').forEach(b => b.classList.remove('running'));
-  freeCodeRunning = false;
-}
-
 // ---- BOOT ----
 init();
 </script>
 </body>
 </html>
-    /* 3D grid on ground plane */
-    .stage-grid {
-      position: absolute;
-      bottom: 0;
-      left: -10%;
-      right: -10%;
-      height: 35%;
-      background: 
-        repeating-linear-gradient(
-          90deg,
-          rgba(100,200,150,0.05) 0px,
-          rgba(100,200,150,0.05) 1px,
-          transparent 1px,
-          transparent 8%
-        ),
-        repeating-linear-gradient(
-          0deg,
-          rgba(100,200,150,0.05) 0px,
-          rgba(100,200,150,0.05) 1px,
-          transparent 1px,
-          transparent 12%
-        );
-      transform: rotateX(60deg);
-      transform-origin: center top;
-      pointer-events: none;
-    }
