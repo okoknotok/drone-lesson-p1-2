@@ -1571,12 +1571,13 @@
     <button class="back-btn-header" onclick="showHome()">首頁</button>
   </div>
   <div class="free-body">
-    <div class="free-stage" id="free-stage">
+    <div class="free-stage" id="free-stage" onmousedown="freeShoot()" style="cursor:crosshair;">
       <!-- Horizon atmosphere -->
       <div class="horizon-glow"></div>
       <div class="horizon-line"></div>
       <!-- Obstacles container -->
       <div id="free-obstacles"></div>
+      <div id="free-bullets"></div>
       <!-- HUD -->
       <div class="hud-overlay">
         <div class="hud-reticle"></div>
@@ -1595,7 +1596,7 @@
         <div class="alt-val" id="free-dist-val">0</div>
         <div class="alt-lbl">飛行距離</div>
         <div class="dist-lbl" id="free-pos">距離: 0 米</div>
-        <div class="score-lbl" id="free-score">分數: 0</div>
+        <div class="score-lbl" id="free-score">擊落: 0</div>
       </div>
       <div class="dpad">
         <div class="dpad-btn empty"></div>
@@ -1628,7 +1629,7 @@
     <button class="back-btn-header" onclick="showHome()">首頁</button>
   </div>
   <div class="free-body">
-    <div class="free-stage" id="free-stage">
+    <div class="free-stage" id="free-stage" onmousedown="freeShoot()" style="cursor:crosshair;">
       <div class="stage-sky"></div>
       <div class="stage-grid"></div>
       <div class="stage-stars"></div>
@@ -2245,10 +2246,15 @@ let freeDist = 0;        // How far we've flown (score)
 let freeLaneX = 50;      // Drone X position in lane % (15=left, 50=center, 85=right)
 let freeCrashed = false;
 let freeObstacles = [];   // Array of obstacle objects {laneX, depth, type, el}
-let freeLaneWidth = 0;
+let freeLaneWidth = 36;
+let freeLaneY = 50;     // vertical position percent (20=high, 80=low)
 let freeDepthMax = 120;
 let freeAnimFrame = null;
 let freeCrashed_once = false;
+
+
+let freeBullets = [];   // {x, y, el} projectile elements
+let freeScore = 0;     // hit counter
 
 // ---- INIT ----
 function showFreeFlight() {
@@ -2291,24 +2297,25 @@ const OBSTACLE_TYPES = [
 
 function buildFreeObstacles() {
   freeObstacles = [];
-  // Generate obstacles at random depths, spread across lanes
-  const numObstacles = 15 + Math.floor(Math.random() * 10);
+  const numObstacles = 12 + Math.floor(Math.random() * 8);
   for (let i = 0; i < numObstacles; i++) {
     const depth = 20 + Math.floor((i / numObstacles) * freeDepthMax);
-    const laneX = 15 + Math.floor(Math.random() * 70); // 15 to 85
+    const laneX = 15 + Math.floor(Math.random() * 70);
+    const laneY = 20 + Math.floor(Math.random() * 60); // 20=high, 80=low
     const typeInfo = OBSTACLE_TYPES[Math.floor(Math.random() * OBSTACLE_TYPES.length)];
     const w = typeInfo.minW + Math.floor(Math.random() * (typeInfo.maxW - typeInfo.minW));
     const h = typeInfo.minH + Math.floor(Math.random() * (typeInfo.maxH - typeInfo.minH));
     freeObstacles.push({
       laneX,
+      laneY,
       depth,
       type: typeInfo.type,
       icon: typeInfo.icon,
       w, h,
-      passed: false
+      passed: false,
+      el: null
     });
   }
-  // Sort by depth (far first)
   freeObstacles.sort((a, b) => a.depth - b.depth);
 }
 
@@ -2345,7 +2352,11 @@ function updateObstaclePositions() {
     const scale = 0.15 + t * 1.85;
     const pixelW = obs.w * scale;
     const pixelH = obs.h * scale;
-    const topPct = 42 + t * 48;
+    // Y based on laneY (20=high at top, 80=low at bottom)
+    // t=0 (far): obstacles at their laneY near horizon
+    // t=1 (close): expanded range from 35% to 85%
+    const laneYTop = 35 + (1 - obs.laneY / 100) * 50; // 35% (laneY=100=low) to 85% (laneY=0=high)
+    const topPct = laneYTop + t * (48 - laneYTop * 0.5);
     const xPct = obs.laneX * 0.7 + 15;
     const fontSize = Math.max(8, pixelH * 0.45);
     const bottomPct = 100 - topPct;
@@ -2354,13 +2365,13 @@ function updateObstaclePositions() {
       obs.el.style.height = pixelH + 'px';
       obs.el.style.left = xPct + '%';
       obs.el.style.bottom = bottomPct + '%';
-      obs.el.style.transform = 'translate(-50%, 0)';
+      obs.el.style.transform = `translate(-50%,0) scale(${scale})`;
       obs.el.style.fontSize = fontSize + 'px';
       obs.el.style.opacity = Math.min(1, 0.3 + t * 0.7);
     } else {
       obs.el.style.left = xPct + '%';
       obs.el.style.top = topPct + '%';
-      obs.el.style.transform = 'translate(-50%, -50%)';
+      obs.el.style.transform = `translate(-50%,-50%) scale(${scale})`;
       obs.el.style.fontSize = fontSize + 'px';
       obs.el.style.opacity = Math.min(1, 0.4 + t * 0.5);
     }
@@ -2374,6 +2385,7 @@ function freeLoop() {
   freeAnimFrame = requestAnimationFrame(freeLoop);
   updateFreeFlight();
   updateObstaclePositions();
+  updateBullets();
 }
 
 // ---- UPDATE ----
@@ -2390,22 +2402,33 @@ function updateFreeFlight() {
   freeDist += freeSpeed * 0.12;
 
   // Check collisions and remove passed obstacles
-  freeObstacles = freeObstacles.filter(obs => {
-    if (obs.depth <= -5) return false; // Behind camera
-    if (!obs.passed && obs.depth < 18 && obs.depth > -2) {
-      // Collision check: X lanes overlap?
+  const removeList = [];
+  for (const obs of freeObstacles) {
+    if (obs.depth <= -8) {
+      // Behind camera — remove from DOM
+      if (obs.el && obs.el.parentNode) obs.el.parentNode.removeChild(obs.el);
+      removeList.push(obs);
+      continue;
+    }
+    if (!obs.passed && obs.depth < 20 && obs.depth > -4) {
+      // Collision check: X and Y lane overlap
       const droneLeft = freeLaneX - freeLaneWidth / 2;
       const droneRight = freeLaneX + freeLaneWidth / 2;
-      const obsLeft = obs.laneX - obs.w / 4;
-      const obsRight = obs.laneX + obs.w / 4;
-      if (droneRight > obsLeft && droneLeft < obsRight) {
+      const obsLeft = obs.laneX - obs.w / 2;
+      const obsRight = obs.laneX + obs.w / 2;
+      const droneTop = freeLaneY - 20;
+      const droneBottom = freeLaneY + 20;
+      const obsTop = obs.laneY - obs.h / 2;
+      const obsBottom = obs.laneY + obs.h / 2;
+      if (droneRight > obsLeft && droneLeft < obsRight &&
+          droneBottom > obsTop && droneTop < obsBottom) {
         triggerCrash();
-        return true;
+        return;
       }
     }
-    if (obs.depth > 20) obs.passed = true;
-    return true;
-  });
+    if (obs.depth > 25) obs.passed = true;
+  }
+  freeObstacles = freeObstacles.filter(obs => !removeList.includes(obs));
 
   // Generate new obstacles as we go
   const maxDepth = Math.max(...freeObstacles.map(o => o.depth));
@@ -2456,7 +2479,7 @@ function updateFreeHUD() {
   const scoreEl = document.getElementById('free-score');
   if (distEl) distEl.textContent = Math.floor(freeDist);
   if (posEl) posEl.textContent = `距離: ${Math.floor(freeDist)} 米`;
-  if (scoreEl) scoreEl.textContent = `分數: ${Math.floor(freeDist)}`;
+  if (scoreEl) scoreEl.textContent = `擊落: ${freeScore}`;
 }
 
 function triggerCrash() {
@@ -2469,7 +2492,7 @@ function triggerCrash() {
   const overlay = document.getElementById('crash-overlay');
   if (overlay) {
     const distText = document.getElementById('crash-dist-text');
-    if (distText) distText.textContent = `飛行了 ${Math.floor(freeDist)} 米`;
+    if (distText) distText.textContent = `飛行了 ${Math.floor(freeDist)} 米 ｜ 擊落 ${freeScore} 個`;
     overlay.classList.add('active');
   }
 }
@@ -2480,8 +2503,8 @@ function freeStartMove(dir) {
   const step = freeSpeed * 0.9;
   if (dir === 'left') freeLaneX = Math.max(15, freeLaneX - step);
   if (dir === 'right') freeLaneX = Math.min(85, freeLaneX + step);
-  if (dir === 'up') { /* forward, handled by loop */ }
-  if (dir === 'down') { /* backward */ }
+  if (dir === 'up') freeLaneY = Math.max(20, freeLaneY - step);    // move UP (higher on screen)
+  if (dir === 'down') freeLaneY = Math.min(80, freeLaneY + step);  // move DOWN (lower on screen)
 }
 
 function freeStopMove() {}
@@ -2499,7 +2522,66 @@ function freeTakeoff() {
   const drone = document.getElementById('free-drone');
   if (drone) { drone.classList.add('flying'); drone.style.opacity = '1'; }
   freeLoop();
+
+// ---- SHOOTING ----
+function freeShoot() {
+  if (freeCrashed || !freeFlying) return;
+  const bulletEl = document.createElement('div');
+  bulletEl.style.cssText = `
+    position:absolute;
+    left:${freeLaneX}%;
+    bottom:12%;
+    width:8px;
+    height:8px;
+    background:#ffe066;
+    border-radius:50%;
+    box-shadow:0 0 8px #ffe066, 0 0 16px #ff9900;
+    z-index:60;
+    pointer-events:none;
+    transform:translate(-50%,0);
+  `;
+  document.getElementById('free-stage').appendChild(bulletEl);
+  const bullet = { el: bulletEl, laneX: freeLaneX, laneY: freeLaneY, depth: 120, speed: freeSpeed * 2 };
+  freeBullets.push(bullet);
 }
+
+function updateBullets() {
+  const removeBullets = [];
+  for (const b of freeBullets) {
+    b.depth -= b.speed;
+    if (b.depth <= 0) {
+      if (b.el.parentNode) b.el.parentNode.removeChild(b.el);
+      removeBullets.push(b);
+      continue;
+    }
+    // Update bullet position on screen
+    const t = Math.max(0, Math.min(1, 1 - (b.depth / freeDepthMax)));
+    const leftPct = b.laneX * 0.7 + 15;
+    const bottomPct = 10 + t * 55;
+    b.el.style.left = leftPct + '%';
+    b.el.style.bottom = bottomPct + '%';
+    b.el.style.transform = `translate(-50%,0) scale(${0.5 + t * 1.5})`;
+    b.el.style.opacity = 0.5 + t * 0.5;
+    // Check bullet vs obstacles
+    for (const obs of freeObstacles) {
+      if (obs.depth < 25 && obs.depth > -4) {
+        const dx = Math.abs(b.laneX - obs.laneX);
+        const dy = Math.abs(b.laneY - obs.laneY);
+        if (dx < 15 && dy < 20) {
+          // Hit!
+          freeScore++;
+          if (obs.el && obs.el.parentNode) obs.el.parentNode.removeChild(obs.el);
+          freeObstacles = freeObstacles.filter(o => o !== obs);
+          if (b.el.parentNode) b.el.parentNode.removeChild(b.el);
+          removeBullets.push(b);
+          updateFreeHUD();
+          break;
+        }
+      }
+    }
+  }
+  freeBullets = freeBullets.filter(b => !removeBullets.includes(b));
+}}
 
 function freeLand() {
   freeFlying = false;
@@ -2513,13 +2595,16 @@ function freeReset() {
   freeCrashed = false;
   freeCrashed_once = false;
   freeLaneX = 50;
+  freeLaneY = 50;
   freeDist = 0;
   freeSpeed = 5;
+  freeBullets = [];
   if (freeAnimFrame) cancelAnimationFrame(freeAnimFrame);
   document.getElementById('crash-overlay').classList.remove('active');
   const drone = document.getElementById('free-drone');
   if (drone) { drone.classList.remove('flying'); drone.style.opacity = '1'; drone.style.left = '50%'; drone.style.transform = 'translate(-50%,0) scale(1.4)'; }
   document.getElementById('free-obstacles').innerHTML = '';
+  document.getElementById('free-bullets').innerHTML = '';
 }
 
 function freeRestart() {
