@@ -2458,6 +2458,7 @@ function freeTakeoff() {
   const drone = document.getElementById('free-drone');
   if (drone) { drone.classList.add('flying'); drone.style.opacity = '1'; }
   freeLoop();
+}
 
 // ---- SHOOTING ----
 function updateBullets() {
@@ -2518,7 +2519,6 @@ function freeShoot() {
   freeBullets.push(bullet);
 }
 
-}
 
 function freeLand() {
   freeFlying = false;
@@ -2598,6 +2598,8 @@ function cleanupKeyboard() {
 // ---- BOOT ----
 
 init();
+
+
 
 
 
