@@ -2496,7 +2496,8 @@ function updateBullets() {
     }
   }
   freeBullets = freeBullets.filter(b => !removeBullets.includes(b));
-}function freeShoot() {
+}
+function freeShoot() {
   if (freeCrashed || !freeFlying) return;
   const bulletEl = document.createElement('div');
   bulletEl.style.cssText = `
@@ -2599,4 +2600,5 @@ function cleanupKeyboard() {
 init();
 
 
-</script></script>
+
+</script>
