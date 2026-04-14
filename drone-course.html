@@ -2346,7 +2346,7 @@ function updateFreeFlight() {
       removeList.push(obs);
       continue;
     }
-    if (!obs.passed && obs.depth < 20 && obs.depth > -4 && freeDist > 20) {
+    if (!obs.passed && obs.depth < 20 && obs.depth > -4 && freeDist > 40) {
       // Collision check: X and Y lane overlap
       const droneLeft = freeLaneX - freeLaneWidth / 2;
       const droneRight = freeLaneX + freeLaneWidth / 2;
@@ -2598,6 +2598,7 @@ function cleanupKeyboard() {
 // ---- BOOT ----
 
 init();
+
 
 
 
