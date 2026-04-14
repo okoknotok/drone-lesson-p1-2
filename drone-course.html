@@ -1260,11 +1260,141 @@
       flex: 1;
       position: relative;
       overflow: hidden;
-      perspective: 900px;
-      perspective-origin: 50% 65%;
+      perspective: 600px;
+      perspective-origin: 50% 85%;
       transform-style: preserve-3d;
+      background: #050a12;
     }
-    .free-controls-panel {
+    
+    /* ---- RUNWAY / HORIZON ---- */
+    .runway {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 4px;
+      height: 0;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.9) 0%, transparent 100%);
+      transform-origin: center top;
+      pointer-events: none;
+      z-index: 5;
+    }
+    .runway-lane {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-left: 1px solid rgba(255,255,255,0.15);
+      border-right: 1px solid rgba(255,255,255,0.15);
+      border-top: 0;
+      transform-origin: center bottom;
+      pointer-events: none;
+      z-index: 4;
+    }
+    .horizon-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 42%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(180,220,255,0.4), transparent);
+      z-index: 3;
+    }
+    .horizon-glow {
+      position: absolute;
+      left: 20%;
+      right: 20%;
+      top: 38%;
+      height: 12%;
+      background: radial-gradient(ellipse at center, rgba(100,180,255,0.15) 0%, transparent 70%);
+      z-index: 2;
+    }
+    .cloud-obj {
+      position: absolute;
+      font-size: 20px;
+      opacity: 0.7;
+      pointer-events: none;
+      z-index: 6;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+      transition: none;
+    }
+    .building-obj {
+      position: absolute;
+      bottom: 38%;
+      background: linear-gradient(180deg, #1a2a4a 0%, #0a1525 100%);
+      border: 1px solid rgba(100,150,200,0.2);
+      border-bottom: none;
+      pointer-events: none;
+      z-index: 6;
+      box-shadow: 0 0 20px rgba(0,50,100,0.4);
+    }
+    .hud-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 20;
+    }
+    .hud-reticle {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 30px;
+      height: 30px;
+      border: 2px solid rgba(100,200,255,0.4);
+      border-radius: 50%;
+    }
+    .hud-reticle::before, .hud-reticle::after {
+      content: '';
+      position: absolute;
+      background: rgba(100,200,255,0.3);
+    }
+    .hud-reticle::before { left: 50%; top: -10px; width: 2px; height: 10px; transform: translateX(-50%); }
+    .hud-reticle::after { top: 50%; left: -10px; height: 2px; width: 10px; transform: translateY(-50%); }
+    .crash-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,50,50,0.0);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .crash-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .crash-text {
+      font-size: 2.5em;
+      font-weight: 900;
+      color: #ff4444;
+      text-shadow: 0 0 30px rgba(255,0,0,0.8);
+    }
+    .crash-dist {
+      font-size: 1.1em;
+      color: rgba(255,255,255,0.7);
+      margin-top: 8px;
+    }
+    .crash-restart {
+      margin-top: 20px;
+      padding: 10px 28px;
+      background: rgba(255,70,70,0.9);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    .score-lbl {
+      font-size: 0.75em;
+      color: rgba(255,255,255,0.5);
+      margin-top: 6px;
+    }
+.free-controls-panel {
       width: 300px;
       background: rgba(255,255,255,0.04);
       border-left: 2px solid rgba(255,255,255,0.08);
@@ -1278,9 +1408,9 @@
     .alt-meter {
       background: rgba(255,255,255,0.08);
       border-radius: 16px;
-      padding: 15px;
-      width: 100%;
+      padding: 12px 20px;
       text-align: center;
+      min-width: 120px;
     }
     .alt-meter .alt-val { font-size: 2.5em; font-weight: 900; color: var(--accent); }
     .alt-meter .alt-lbl { color: rgba(255,255,255,0.5); font-size: 0.85em; }
@@ -1442,6 +1572,63 @@
   </div>
   <div class="free-body">
     <div class="free-stage" id="free-stage">
+      <!-- Horizon atmosphere -->
+      <div class="horizon-glow"></div>
+      <div class="horizon-line"></div>
+      <!-- Obstacles container -->
+      <div id="free-obstacles"></div>
+      <!-- HUD -->
+      <div class="hud-overlay">
+        <div class="hud-reticle"></div>
+      </div>
+      <!-- Crash overlay -->
+      <div class="crash-overlay" id="crash-overlay">
+        <div class="crash-text">💥 碰撞!</div>
+        <div class="crash-dist" id="crash-dist-text"></div>
+        <button class="crash-restart" onclick="freeRestart()">🔄 再試一次</button>
+      </div>
+      <!-- Drone (third-person view: bottom center) -->
+      <div class="stage-drone" id="free-drone" style="bottom:8%;left:50%;transform:translate(-50%,0) scale(1.4);z-index:50;position:absolute;">🚁</div>
+    </div>
+    <div class="free-controls-panel">
+      <div class="alt-meter">
+        <div class="alt-val" id="free-dist-val">0</div>
+        <div class="alt-lbl">飛行距離</div>
+        <div class="dist-lbl" id="free-pos">距離: 0 米</div>
+        <div class="score-lbl" id="free-score">分數: 0</div>
+      </div>
+      <div class="dpad">
+        <div class="dpad-btn empty"></div>
+        <button class="dpad-btn" onmousedown="freeStartMove('up')" onmouseup="freeStopMove()" ontouchstart="freeStartMove('up')" ontouchend="freeStopMove()">⬆️</button>
+        <div class="dpad-btn empty"></div>
+        <button class="dpad-btn" onmousedown="freeStartMove('left')" onmouseup="freeStopMove()" ontouchstart="freeStartMove('left')" ontouchend="freeStopMove()">⬅️</button>
+        <button class="dpad-btn ctr" onclick="freeReset()">🔄</button>
+        <button class="dpad-btn" onmousedown="freeStartMove('right')" onmouseup="freeStopMove()" ontouchstart="freeStartMove('right')" ontouchend="freeStopMove()">➡️</button>
+        <div class="dpad-btn empty"></div>
+        <button class="dpad-btn" onmousedown="freeStartMove('down')" onmouseup="freeStopMove()" ontouchstart="freeStartMove('down')" ontouchend="freeStopMove()">⬇️</button>
+        <div class="dpad-btn empty"></div>
+      </div>
+      <div class="act-btns">
+        <button class="act-btn takeoff" onclick="freeTakeoff()">🚀 起飛</button>
+        <button class="act-btn land" onclick="freeLand()">🛬 降落</button>
+      </div>
+      <div class="speed-control">
+        <div class="speed-lbl">速度：<span id="spd-lbl">5</span></div>
+        <input type="range" min="1" max="10" value="5" oninput="updateSpeed(this.value)" style="width:140px;">
+      </div>
+      <div class="kb-hint">⬆️前進 | ⬇️後退<br>⬅️左轉 | ➡️右轉</div>
+    </div>
+  </div></div>
+
+<!-- ===================== FREE FLIGHT ===================== -->
+<div id="screen-freeflight" class="screen">
+  <div class="free-header">
+    <button class="back-btn-header" onclick="showLessons()">⬅ 課題</button>
+    <h2>✈️ 自由飛行</h2>
+    <button class="back-btn-header" onclick="showHome()">首頁</button>
+  </div>
+  <div class="free-body">
+    <div class="free-stage" id="free-stage">
       <div class="stage-sky"></div>
       <div class="stage-grid"></div>
       <div class="stage-stars"></div>
@@ -1507,7 +1694,7 @@ let lessonDone = false;
 let trails = [];
 let attempts = 0;
 let hintShown = false, hintIdx = 0;
-let freeX = 50, freeY = 38, freeZ = 50, freeAngle = 0, freeFlying = false, freeSpeed = 5, freeLastDir = "up";
+let freeFlying = false;
 
 // ---- DATA ----
 const BLOCK = {
@@ -2049,144 +2236,280 @@ function saveProgress(lesson) {
   if (!s.completed.includes(lesson)) { s.completed.push(lesson); localStorage.setItem('drone-course-progress', JSON.stringify(s)); }
 }
 
-// ---- FREE FLIGHT ----
-function freeFly(dir) {
-  if (!freeFlying) return;
-  const step = freeSpeed * 1.2;
-  freeLastDir = dir;
-  if (dir === 'up') {
-    // Forward into screen — drone gets BIGGER, appears to move toward horizon
-    freeZ = Math.min(100, freeZ + step * 2.2);
-  }
-  if (dir === 'down') {
-    // Backward toward camera — drone gets SMALLER, appears to come closer
-    freeZ = Math.max(0, freeZ - step * 2.2);
-  }
-  if (dir === 'left') { freeX = Math.max(5, freeX - step * 1.5); }
-  if (dir === 'right') { freeX = Math.min(95, freeX + step * 1.5); }
-  updateFreeDrone3D();
+// ================================================================
+// FREE FLIGHT 3D - Third-person chase view with obstacle avoidance
+// ================================================================
+
+// ---- STATE ----
+let freeDist = 0;        // How far we've flown (score)
+let freeLaneX = 50;      // Drone X position in lane % (15=left, 50=center, 85=right)
+let freeCrashed = false;
+let freeObstacles = [];   // Array of obstacle objects {laneX, depth, type, el}
+let freeLaneWidth = 0;
+let freeDepthMax = 120;
+let freeAnimFrame = null;
+let freeCrashed_once = false;
+
+// ---- INIT ----
+function showFreeFlight() {
+  freeReset();
+  cleanupKeyboard();
+  hideAll();
+  document.getElementById('screen-freeflight').classList.add('active');
+  initFreeFlight();
 }
 
-function updateFreeDrone() { updateFreeDrone3D(); }
+function initFreeFlight() {
+  freeLaneX = 50;
+  freeDist = 0;
+  freeCrashed = false;
+  freeCrashed_once = false;
+  freeLaneWidth = 36; // percent
+  freeSpeed = 5;
+  if (freeAnimFrame) cancelAnimationFrame(freeAnimFrame);
+  document.getElementById('crash-overlay').classList.remove('active');
+  document.getElementById('free-drone').style.opacity = '1';
+  buildFreeObstacles();
+  renderFreeObstacles();
+  updateFreeHUD();
+  if (freeAnimFrame) cancelAnimationFrame(freeAnimFrame);
+  freeLoop();
+}
 
-function updateFreeDrone3D() {
-  const d = document.getElementById('free-drone');
-  if (!d) return;
-  // 3D: freeX = strafe (5-95%), freeZ = depth (0=close/small, 100=far/big)
-  // Scale: 0.4 (far at horizon) to 2.0 (close at camera)
-  const scale = 0.4 + (freeZ / 100) * 1.6; // 0.4 to 2.0
-  // Y position: 65% (far at horizon) to 35% (close at bottom) — perspective depth
-  const topPct = 65 - (freeZ / 100) * 30; // 65% to 35%
-  // X also converges slightly toward center as drone goes far
-  const xPct = freeX * 0.85 + 7.5; // 5→12%, 50→50%, 95→88%
-  d.style.left = xPct + '%';
-  d.style.bottom = 'auto';
-  d.style.top = topPct + '%';
-  // Rotate based on last direction
-  let displayAngle = 0;
-  if (freeLastDir === 'left') displayAngle = 180;
-  else if (freeLastDir === 'right') displayAngle = 0;
-  else if (freeLastDir === 'up') displayAngle = 90;
-  else if (freeLastDir === 'down') displayAngle = 270;
-  d.style.transform = `translate(-50%,0) scale(${scale}) rotate(${displayAngle}deg)`;
-  // Shadow: larger when close (bigger scale), smaller when far
-  const shadowEl = document.getElementById('free-drone-shadow');
-  if (shadowEl) {
-    const shadowScale = 0.4 + (1 - freeZ / 100) * 1.2; // big when close, small when far
-    const shadowLeft = xPct;
-    const shadowBottom = 8 + (1 - freeZ / 100) * 6;
-    shadowEl.style.left = shadowLeft + '%';
-    shadowEl.style.bottom = shadowBottom + '%';
-    shadowEl.style.transform = `translate(-50%,0) scale(${shadowScale}, ${shadowScale * 0.3})`;
-    shadowEl.style.opacity = 0.3 + (1 - freeZ / 100) * 0.5;
+// ---- OBSTACLE GENERATION ----
+const OBSTACLE_TYPES = [
+  { type: 'cloud', icon: '☁️', minW: 30, maxW: 60, minH: 20, maxH: 35 },
+  { type: 'cloud', icon: '🌥️', minW: 25, maxW: 50, minH: 18, maxH: 30 },
+  { type: 'cloud', icon: '⛅', minW: 28, maxW: 55, minH: 20, maxH: 32 },
+  { type: 'building', icon: '🏢', minW: 20, maxW: 45, minH: 30, maxH: 60 },
+  { type: 'building', icon: '🏬', minW: 22, maxW: 40, minH: 28, maxH: 55 },
+  { type: 'building', icon: '🏗️', minW: 18, maxW: 35, minH: 35, maxH: 65 },
+  { type: 'tree', icon: '🌲', minW: 15, maxW: 30, minH: 25, maxH: 45 },
+  { type: 'tree', icon: '🌴', minW: 14, maxW: 28, minH: 22, maxH: 42 },
+  { type: 'mountain', icon: '⛰️', minW: 30, maxW: 60, minH: 28, maxH: 50 },
+];
+
+function buildFreeObstacles() {
+  freeObstacles = [];
+  // Generate obstacles at random depths, spread across lanes
+  const numObstacles = 15 + Math.floor(Math.random() * 10);
+  for (let i = 0; i < numObstacles; i++) {
+    const depth = 20 + Math.floor((i / numObstacles) * freeDepthMax);
+    const laneX = 15 + Math.floor(Math.random() * 70); // 15 to 85
+    const typeInfo = OBSTACLE_TYPES[Math.floor(Math.random() * OBSTACLE_TYPES.length)];
+    const w = typeInfo.minW + Math.floor(Math.random() * (typeInfo.maxW - typeInfo.minW));
+    const h = typeInfo.minH + Math.floor(Math.random() * (typeInfo.maxH - typeInfo.minH));
+    freeObstacles.push({
+      laneX,
+      depth,
+      type: typeInfo.type,
+      icon: typeInfo.icon,
+      w, h,
+      passed: false
+    });
   }
-  const altEl = document.getElementById('free-alt-val');
-  if (altEl) altEl.textContent = Math.round(freeZ) + '%';
+  // Sort by depth (far first)
+  freeObstacles.sort((a, b) => a.depth - b.depth);
+}
+
+function renderFreeObstacles() {
+  const container = document.getElementById('free-obstacles');
+  if (!container) return;
+  container.innerHTML = '';
+  for (const obs of freeObstacles) {
+    if (obs.type === 'building' || obs.type === 'tree' || obs.type === 'mountain') {
+      const el = document.createElement('div');
+      el.className = 'building-obj';
+      el.style.fontSize = '0';
+      el.style.width = obs.w + 'px';
+      el.style.height = obs.h + 'px';
+      el.style.display = 'flex';
+      el.style.alignItems = 'center';
+      el.style.justifyContent = 'center';
+      el.style.fontSize = Math.max(12, obs.h * 0.5) + 'px';
+      el.textContent = obs.icon;
+      container.appendChild(el);
+      obs.el = el;
+    } else {
+      const el = document.createElement('div');
+      el.className = 'cloud-obj';
+      el.textContent = obs.icon;
+      el.style.fontSize = Math.max(14, obs.h) + 'px';
+      container.appendChild(el);
+      obs.el = el;
+    }
+  }
+}
+
+// ---- MAIN LOOP ----
+function freeLoop() {
+  if (freeCrashed) return;
+  freeAnimFrame = requestAnimationFrame(freeLoop);
+  updateFreeFlight();
+  renderFreeObstacles();
+}
+
+// ---- UPDATE ----
+function updateFreeFlight() {
+  const drone = document.getElementById('free-drone');
+  if (!drone) return;
+  const stage = document.getElementById('free-stage');
+  if (!stage) return;
+
+  // Move all obstacles toward camera (decrease depth)
+  for (const obs of freeObstacles) {
+    obs.depth -= freeSpeed * 0.12;
+  }
+  freeDist += freeSpeed * 0.12;
+
+  // Check collisions and remove passed obstacles
+  freeObstacles = freeObstacles.filter(obs => {
+    if (obs.depth <= -5) return false; // Behind camera
+    if (!obs.passed && obs.depth < 18 && obs.depth > -2) {
+      // Collision check: X lanes overlap?
+      const droneLeft = freeLaneX - freeLaneWidth / 2;
+      const droneRight = freeLaneX + freeLaneWidth / 2;
+      const obsLeft = obs.laneX - obs.w / 4;
+      const obsRight = obs.laneX + obs.w / 4;
+      if (droneRight > obsLeft && droneLeft < obsRight) {
+        triggerCrash();
+        return true;
+      }
+    }
+    if (obs.depth > 20) obs.passed = true;
+    return true;
+  });
+
+  // Generate new obstacles as we go
+  const maxDepth = Math.max(...freeObstacles.map(o => o.depth));
+  if (maxDepth < freeDepthMax - 15) {
+    const depth = freeDepthMax + Math.floor(Math.random() * 20);
+    const laneX = 15 + Math.floor(Math.random() * 70);
+    const typeInfo = OBSTACLE_TYPES[Math.floor(Math.random() * OBSTACLE_TYPES.length)];
+    const w = typeInfo.minW + Math.floor(Math.random() * (typeInfo.maxW - typeInfo.minW));
+    const h = typeInfo.minH + Math.floor(Math.random() * (typeInfo.maxH - typeInfo.minH));
+    const newObs = { laneX, depth, type: typeInfo.type, icon: typeInfo.icon, w, h, passed: false };
+    freeObstacles.push(newObs);
+    const container = document.getElementById('free-obstacles');
+    if (container) {
+      if (newObs.type === 'building' || newObs.type === 'tree' || newObs.type === 'mountain') {
+        const el = document.createElement('div');
+        el.className = 'building-obj';
+        el.style.fontSize = '0';
+        el.style.width = w + 'px';
+        el.style.height = h + 'px';
+        el.style.display = 'flex';
+        el.style.alignItems = 'center';
+        el.style.justifyContent = 'center';
+        el.style.fontSize = Math.max(12, h * 0.5) + 'px';
+        el.textContent = newObs.icon;
+        container.appendChild(el);
+        newObs.el = el;
+      } else {
+        const el = document.createElement('div');
+        el.className = 'cloud-obj';
+        el.textContent = newObs.icon;
+        el.style.fontSize = Math.max(14, h) + 'px';
+        container.appendChild(el);
+        newObs.el = el;
+      }
+    }
+  }
+
+  // Update drone position (bottom center, subtle X shift)
+  drone.style.left = freeLaneX + '%';
+  drone.style.transform = `translate(-50%,0) scale(1.4)`;
+
+  updateFreeHUD();
+}
+
+function updateFreeHUD() {
+  const distEl = document.getElementById('free-dist-val');
   const posEl = document.getElementById('free-pos');
-  if (posEl) posEl.textContent = `X:${Math.round(freeX)} Z:${Math.round(freeZ)}`;
+  const scoreEl = document.getElementById('free-score');
+  if (distEl) distEl.textContent = Math.floor(freeDist);
+  if (posEl) posEl.textContent = `距離: ${Math.floor(freeDist)} 米`;
+  if (scoreEl) scoreEl.textContent = `分數: ${Math.floor(freeDist)}`;
 }
 
-let freeContinuousTimer = null;
-
-function freeStop() {
-  // Legacy - keep for direct calls
-  freeStopMove();
-}
-
-function freeStartMove(dir) {
-  // Start continuous movement (for mouse hold on D-pad)
-  if (!freeFlying) return;
-  freeFly(dir);
-  if (freeContinuousTimer) clearInterval(freeContinuousTimer);
-  freeContinuousTimer = setInterval(() => {
-    if (freeFlying) freeFly(dir);
-  }, 100);
-}
-
-function freeStopMove() {
-  // Stop continuous D-pad movement
-  if (freeContinuousTimer) {
-    clearInterval(freeContinuousTimer);
-    freeContinuousTimer = null;
+function triggerCrash() {
+  if (freeCrashed_once) return;
+  freeCrashed_once = true;
+  freeCrashed = true;
+  if (freeAnimFrame) cancelAnimationFrame(freeAnimFrame);
+  const drone = document.getElementById('free-drone');
+  if (drone) drone.style.opacity = '0.3';
+  const overlay = document.getElementById('crash-overlay');
+  if (overlay) {
+    const distText = document.getElementById('crash-dist-text');
+    if (distText) distText.textContent = `飛行了 ${Math.floor(freeDist)} 米`;
+    overlay.classList.add('active');
   }
 }
+
+// ---- CONTROLS ----
+function freeStartMove(dir) {
+  if (freeCrashed || !freeFlying) return;
+  const step = freeSpeed * 0.9;
+  if (dir === 'left') freeLaneX = Math.max(15, freeLaneX - step);
+  if (dir === 'right') freeLaneX = Math.min(85, freeLaneX + step);
+  if (dir === 'up') { /* forward, handled by loop */ }
+  if (dir === 'down') { /* backward */ }
+}
+
+function freeStopMove() {}
 
 function freeTakeoff() {
   freeFlying = true;
-  freeStopMove();
-  freeZ = 50;
-  freeLastDir = 'up';
-  const d = document.getElementById('free-drone');
-  if (d) d.classList.add('flying');
-  updateFreeDrone3D();
+  freeCrashed = false;
+  freeCrashed_once = false;
+  freeLaneX = 50;
+  freeDist = 0;
+  if (freeAnimFrame) cancelAnimationFrame(freeAnimFrame);
+  buildFreeObstacles();
+  document.getElementById('crash-overlay').classList.remove('active');
+  const drone = document.getElementById('free-drone');
+  if (drone) { drone.classList.add('flying'); drone.style.opacity = '1'; }
+  freeLoop();
 }
 
 function freeLand() {
   freeFlying = false;
-  freeStopMove();
-  const d = document.getElementById('free-drone');
-  if (d) d.classList.remove('flying');
-  freeZ = 0;
-  updateFreeDrone3D();
+  if (freeAnimFrame) cancelAnimationFrame(freeAnimFrame);
+  const drone = document.getElementById('free-drone');
+  if (drone) drone.classList.remove('flying');
 }
 
 function freeReset() {
-  freeX = 50; freeY = 38; freeZ = 50; freeAngle = 0; freeFlying = false; freeLastDir = 'up';
-  freeStopMove();
-  const d = document.getElementById('free-drone');
-  if (d) d.classList.remove('flying');
-  updateFreeDrone3D();
+  freeFlying = false;
+  freeCrashed = false;
+  freeCrashed_once = false;
+  freeLaneX = 50;
+  freeDist = 0;
+  freeSpeed = 5;
+  if (freeAnimFrame) cancelAnimationFrame(freeAnimFrame);
+  document.getElementById('crash-overlay').classList.remove('active');
+  const drone = document.getElementById('free-drone');
+  if (drone) { drone.classList.remove('flying'); drone.style.opacity = '1'; drone.style.left = '50%'; drone.style.transform = 'translate(-50%,0) scale(1.4)'; }
+  document.getElementById('free-obstacles').innerHTML = '';
+}
+
+function freeRestart() {
+  initFreeFlight();
+  freeTakeoff();
 }
 
 function updateSpeed(v) {
   freeSpeed = parseInt(v);
   document.getElementById('spd-lbl').textContent = v;
-  document.getElementById('spd-num').textContent = v;
 }
 
-
-// ---- KEYBOARD CONTROLS (Free Flight) ----
+// Keyboard controls
 const keysDown = new Set();
 let keyIntervalId = null;
-
-function startKeyMovement() {
-  if (keyIntervalId) return;
-  keyIntervalId = setInterval(() => {
-    if (!freeFlying || keysDown.size === 0) return;
-    for (const key of keysDown) {
-      const dir = keyMap[key];
-      if (dir) freeFly(dir);
-    }
-  }, 100);
-}
-
-const keyMap = {
-  ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right',
-  w: 'up', W: 'up', s: 'down', S: 'down', a: 'left', A: 'left', d: 'right', D: 'right'
-};
+const keyMap = { 'ArrowLeft': 'left', 'ArrowRight': 'right', 'ArrowUp': 'up', 'ArrowDown': 'down', 'a': 'left', 'd': 'right', 'w': 'up', 's': 'down' };
 
 document.addEventListener('keydown', (e) => {
-  // Only respond when free flight screen is active
   const screen = document.getElementById('screen-freeflight');
   if (!screen || !screen.classList.contains('active')) return;
   const dir = keyMap[e.key];
@@ -2194,7 +2517,7 @@ document.addEventListener('keydown', (e) => {
   e.preventDefault();
   if (!keysDown.has(e.key)) {
     keysDown.add(e.key);
-    freeFly(dir); // Move once immediately
+    freeStartMove(dir);
     startKeyMovement();
   }
 });
@@ -2207,18 +2530,23 @@ document.addEventListener('keyup', (e) => {
   }
 });
 
-// Clear keys when leaving the screen
-function cleanupKeyboard() {
-  keysDown.clear();
-  if (keyIntervalId) {
-    clearInterval(keyIntervalId);
-    keyIntervalId = null;
-  }
+function startKeyMovement() {
+  if (keyIntervalId) return;
+  keyIntervalId = setInterval(() => {
+    for (const k of keysDown) {
+      const dir = keyMap[k];
+      if (dir) freeStartMove(dir);
+    }
+  }, 50);
 }
 
+function cleanupKeyboard() {
+  keysDown.clear();
+  if (keyIntervalId) { clearInterval(keyIntervalId); keyIntervalId = null; }
+}
 
 // ---- BOOT ----
+
 init();
+
 </script>
-</body>
-</html>
