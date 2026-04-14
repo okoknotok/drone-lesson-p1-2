@@ -136,10 +136,10 @@
     }
 
     .trail-dot {
-      width: 6px;
-      height: 6px;
-      background: radial-gradient(circle, rgba(100,200,255,0.8) 0%, rgba(100,200,255,0) 100%);
-      box-shadow: 0 0 10px rgba(100,200,255,0.5);
+      width: 8px;
+      height: 8px;
+      background: radial-gradient(circle, rgba(100,200,255,1) 0%, rgba(100,200,255,0) 100%);
+      box-shadow: 0 0 12px rgba(100,200,255,0.8), 0 0 25px rgba(100,200,255,0.4);
       border-radius: 50%;
       animation: trailFade 2s ease-out forwards;
     }
@@ -284,6 +284,181 @@
       box-shadow: 0 4px 15px rgba(255,167,0,0.4);
     }
 
+
+
+    /* Teaching panel in free flight */
+    .teach-panel {
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 10px;
+      margin-top: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .teach-title {
+      font-size: 0.75em;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 6px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .key-guide {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      font-size: 0.7em;
+      color: rgba(255,255,255,0.6);
+    }
+    .key-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.05);
+      padding: 3px 6px;
+      border-radius: 6px;
+    }
+    .key-cap {
+      background: rgba(255,255,255,0.15);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+      min-width: 28px;
+      text-align: center;
+    }
+    .code-challenge {
+      margin-top: 8px;
+    }
+    .challenge-tip {
+      font-size: 0.7em;
+      color: rgba(255,200,100,0.8);
+      background: rgba(255,200,100,0.1);
+      padding: 6px 8px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .program-blocks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      min-height: 36px;
+      padding: 6px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .program-blocks .program-block {
+      font-size: 0.7em;
+      padding: 4px 8px;
+    }
+    .run-code-btn {
+      width: 100%;
+      padding: 6px;
+      background: linear-gradient(135deg, #43a047, #2e7d32);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.8em;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .run-code-btn:active { transform: scale(0.97); }
+    /* Position display */
+    .pos-val {
+      font-size: 0.7em;
+      color: rgba(100,200,255,0.8);
+      font-family: monospace;
+      margin-top: 4px;
+    }
+    /* Key visual indicators */
+    .key-indicators {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      margin-top: 6px;
+    }
+    .key-ind {
+      width: 26px;
+      height: 26px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8em;
+      transition: all 0.1s;
+    }
+    .key-ind.pressed {
+      background: rgba(100,200,255,0.6);
+      box-shadow: 0 0 10px rgba(100,200,255,0.8);
+      transform: scale(1.1);
+    }
+    /* Free palette in teach panel */
+    .free-palette-row {
+      margin: 6px 0;
+    }
+    #free-palette {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    #free-palette .palette-block {
+      font-size: 0.65em;
+      padding: 4px 6px;
+      cursor: pointer;
+    }
+    #free-palette .palette-block .icon {
+      font-size: 1em;
+    }
+    #free-palette .palette-block .lbl {
+      font-size: 0.8em;
+    }
+    /* Stage 3D enhancements */
+    .stage-panel {
+      perspective: 1200px;
+      overflow: hidden;
+    }
+    .stage-sky {
+      background: linear-gradient(180deg,
+        #050a15 0%,
+        #0a1628 30%,
+        #102040 60%,
+        #1a3050 100%) !important;
+    }
+    .stage-ground {
+      background: linear-gradient(180deg,
+        #1a5a3a 0%,
+        #0d3d24 50%,
+        #0a2a1a 100%) !important;
+      box-shadow: inset 0 20px 60px rgba(0,0,0,0.5) !important;
+    }
+    .stage-drone {
+      text-shadow: 0 0 25px rgba(100,200,255,0.9), 0 0 50px rgba(100,200,255,0.4) !important;
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6)) !important;
+      transition: transform 0.15s ease-out, text-shadow 0.3s !important;
+    }
+    .stage-drone.flying {
+      text-shadow: 0 0 40px rgba(100,200,255,1), 0 0 80px rgba(100,200,255,0.6), 0 0 120px rgba(100,200,255,0.3) !important;
+      filter: drop-shadow(0 15px 30px rgba(0,0,0,0.7)) !important;
+      animation: droneHover 0.8s ease-in-out infinite !important;
+    }
+    @keyframes droneHover {
+      0%, 100% { transform: translate(-50%, 0) scale(1); }
+      50% { transform: translate(-50%, -5px) scale(1.05); }
+    }
+    /* Stage obstacle 3D */
+    .stage-obstacle {
+      filter: drop-shadow(4px 8px 12px rgba(0,0,0,0.5)) !important;
+      transform: translate(-50%, 0) !important;
+    }
+    /* Trail glow */
+    .trail-dot {
+      box-shadow: 0 0 8px rgba(100,200,255,0.8), 0 0 15px rgba(100,200,255,0.4) !important;
+    }
+    /* Confetti burst */
+    .confetti-piece {
+      box-shadow: 0 0 6px currentColor !important;
+    }
 
 /* ===== SCREEN SYSTEM ===== */
     .screen { display: none; }
@@ -1236,7 +1411,7 @@
     </div>
     <div class="free-controls-panel">
       <div class="alt-meter">
-        <div class="alt-val" id="free-alt-val">0%</div>
+        <div class="alt-val" id="free-alt-val">0%</div><div class="pos-val" id="free-pos">X:50 Y:38</div>
         <div class="alt-lbl">飛行高度</div>
       </div>
       <div class="dpad">
@@ -1260,6 +1435,25 @@
         <div class="speed-num" id="spd-num">5</div>
       </div>
       <button class="free-reset-btn" onclick="freeReset()">🔄 重置</button>
+      <!-- Teaching: Key guide -->
+      <div class="teach-panel">
+        <div class="teach-title">⌨️ 鍵盤控制</div>
+        <div class="free-palette-row">
+          <div id="free-palette" class="free-palette"></div>
+        </div>
+        <div class="key-guide">
+          <div class="key-row"><span class="key-cap">W / ⬆️</span><span>向上飛</span></div>
+          <div class="key-row"><span class="key-cap">S / ⬇️</span><span>向下飛</span></div>
+          <div class="key-row"><span class="key-cap">A / ⬅️</span><span>向左飛</span></div>
+          <div class="key-row"><span class="key-cap">D / ➡️</span><span>向右飛</span></div>
+        </div>
+        <div class="teach-title" style="margin-top:12px">🧠 程式思維</div>
+        <div class="code-challenge" id="code-challenge">
+          <div class="challenge-tip">💡 任務：寫一個程式讓無人機<br>起飛後自動巡邏一圈！</div>
+          <div class="program-blocks" id="free-code-blocks"></div>
+          <button class="run-code-btn" onclick="runFreeCode()">▶ 執行</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1279,7 +1473,7 @@ let lessonDone = false;
 let trails = [];
 let attempts = 0;
 let hintShown = false, hintIdx = 0;
-let freeX = 50, freeY = 38, freeAngle = 0, freeFlying = false, freeSpeed = 5;
+let freeX = 50, freeY = 38, freeAngle = 0, freeFlying = false, freeSpeed = 5, freeLastDir = "up";
 
 // ---- DATA ----
 const BLOCK = {
@@ -1354,7 +1548,7 @@ function buildStageStars() {
 function showHome() { hideAll(); document.getElementById('screen-welcome').classList.add('active'); }
 function showLessons() { renderLessonSelect(); hideAll(); document.getElementById('screen-lessons').classList.add('active'); }
 function showCourse() { hideAll(); document.getElementById('screen-course').classList.add('active'); }
-function showFreeFlight() { freeReset(); hideAll(); document.getElementById('screen-freeflight').classList.add('active'); buildStageStars(); }
+function showFreeFlight() { freeReset(); hideAll(); renderFreePalette(); document.getElementById('screen-freeflight').classList.add('active'); buildStageStars(); }
 function hideAll() { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); }
 
 // ---- LESSON SELECT ----
@@ -1824,11 +2018,12 @@ function saveProgress(lesson) {
 // ---- FREE FLIGHT ----
 function freeFly(dir) {
   if (!freeFlying) return;
-  const step = freeSpeed * 0.6;
-  if (dir === 'up') freeY = Math.min(80, freeY + step);
+  const step = freeSpeed * 0.8;
+  freeLastDir = dir;
+  if (dir === 'up') freeY = Math.min(82, freeY + step);
   if (dir === 'down') freeY = Math.max(28, freeY - step);
-  if (dir === 'left') freeAngle = (freeAngle - 10 + 360) % 360;
-  if (dir === 'right') freeAngle = (freeAngle + 10) % 360;
+  if (dir === 'left') freeX = Math.max(3, freeX - step);
+  if (dir === 'right') freeX = Math.min(97, freeX + step);
   updateFreeDrone();
 }
 
@@ -1836,8 +2031,17 @@ function updateFreeDrone() {
   const d = document.getElementById('free-drone');
   d.style.left = freeX + '%';
   d.style.bottom = freeY + '%';
-  d.style.transform = `translate(-50%,0) rotate(${freeAngle}deg)`;
-  document.getElementById('free-alt-val').textContent = Math.max(0, Math.round((freeY - 28) / 52 * 100)) + '%';
+  // Auto-rotate drone to face movement direction (third-person visual)
+  let displayAngle = freeAngle;
+  if (freeLastDir === 'left') displayAngle = 180;
+  else if (freeLastDir === 'right') displayAngle = 0;
+  else if (freeLastDir === 'up') displayAngle = 90;
+  else if (freeLastDir === 'down') displayAngle = 270;
+  d.style.transform = `translate(-50%,0) rotate(${displayAngle}deg)`;
+  document.getElementById('free-alt-val').textContent = Math.max(0, Math.round((freeY - 28) / 54 * 100)) + '%';
+  // Update position display
+  const posEl = document.getElementById('free-pos');
+  if (posEl) posEl.textContent = `X:${Math.round(freeX)} Y:${Math.round(freeY)}`;
 }
 
 function freeTakeoff() {
@@ -1865,6 +2069,132 @@ function updateSpeed(v) {
   freeSpeed = parseInt(v);
   document.getElementById('spd-lbl').textContent = v;
   document.getElementById('spd-num').textContent = v;
+}
+
+
+// ---- KEYBOARD CONTROLS (Free Flight) ----
+const keysDown = new Set();
+let freeKeyTimer = null;
+
+document.addEventListener('keydown', (e) => {
+  if (!document.getElementById('screen-freeflight').classList.contains('active')) return;
+  if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','w','a','s','d','W','A','S','D'].includes(e.key)) {
+    e.preventDefault();
+    if (!keysDown.has(e.key)) {
+      keysDown.add(e.key);
+      updateKeyVisual(e.key, true);
+      handleKeyFly(e.key);
+    }
+  }
+});
+
+document.addEventListener('keyup', (e) => {
+  if (!document.getElementById('screen-freeflight').classList.contains('active')) return;
+  keysDown.delete(e.key);
+  updateKeyVisual(e.key, false);
+});
+
+function handleKeyFly(key) {
+  const dir = {ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',W:'up',s:'down',S:'down',a:'left',A:'left',d:'right',D:'right'}[key];
+  if (dir) { freeFly(dir); freeKeyTimer = setTimeout(() => handleKeyFly(key), 80); }
+}
+
+function updateKeyVisual(key, active) {
+  const map = {ArrowUp:'key-up',ArrowDown:'key-down',ArrowLeft:'key-left',ArrowRight:'key-right',w:'key-up',W:'key-up',s:'key-down',S:'key-down',a:'key-left',A:'key-left',d:'key-right',D:'key-right'};
+  const id = map[key];
+  if (!id) return;
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('pressed', active);
+}
+
+// Continuous key hold movement
+setInterval(() => {
+  if (!document.getElementById('screen-freeflight').classList.contains('active')) return;
+  if (keysDown.size === 0) return;
+  for (const key of keysDown) {
+    const dir = {ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',W:'up',s:'down',S:'down',a:'left',A:'left',d:'right',D:'right'}[key];
+    if (dir) { freeFly(dir); }
+  }
+}, 120);
+
+
+// ---- FREE FLIGHT CODING CHALLENGE ----
+const FREE_CODE_BLOCKS = [
+  {type:'takeoff', icon:'🚀', label:'起飛'},
+  {type:'forward', icon:'⬆️', label:'前進'},
+  {type:'left', icon:'⬅️', label:'左轉'},
+  {type:'right', icon:'➡️', label:'右轉'},
+  {type:'wait', icon:'⏱️', label:'等候'},
+  {type:'land', icon:'🛬', label:'降落'},
+];
+
+function renderFreePalette() {
+  const pal = document.getElementById('free-palette');
+  if (!pal) return;
+  pal.innerHTML = '';
+  FREE_CODE_BLOCKS.forEach(b => {
+    const btn = document.createElement('button');
+    btn.className = 'palette-block ' + b.type;
+    btn.innerHTML = `<span class="icon">${b.icon}</span><span class="lbl">${b.label}</span>`;
+    btn.onclick = () => addFreeCode(b.type);
+    pal.appendChild(btn);
+  });
+}
+
+let freeCodeProgram = [];
+function addFreeCode(type) {
+  freeCodeProgram.push(type);
+  renderFreeCodeWorkspace();
+  playAddBlock();
+}
+
+function renderFreeCodeWorkspace() {
+  const ws = document.getElementById('free-code-blocks');
+  if (!ws) return;
+  ws.innerHTML = '';
+  freeCodeProgram.forEach((type, i) => {
+    const b = FREE_CODE_BLOCKS.find(x => x.type === type);
+    if (!b) return;
+    const el = document.createElement('div');
+    el.className = `program-block ${b.type}`;
+    el.innerHTML = `<span class="num">${i+1}</span><span class="icon">${b.icon}</span><span class="name">${b.label}</span><span class="del" onclick="delFreeCode(${i})">✖</span>`;
+    ws.appendChild(el);
+  });
+}
+
+function delFreeCode(i) {
+  freeCodeProgram.splice(i, 1);
+  renderFreeCodeWorkspace();
+}
+
+async function runFreeCode() {
+  if (freeCodeProgram.length === 0) return;
+  // Flash the drone to show it's running
+  const drone = document.getElementById('free-drone');
+  drone.classList.add('flying');
+  for (let i = 0; i < freeCodeProgram.length; i++) {
+    const type = freeCodeProgram[i];
+    // Highlight current block
+    document.querySelectorAll('#free-code-blocks .program-block').forEach((b, idx) => {
+      b.classList.remove('running');
+      if (idx === i) b.classList.add('running');
+    });
+    // Execute
+    if (type === 'takeoff') { freeTakeoff(); }
+    else if (type === 'land') { freeLand(); }
+    else if (type === 'forward') {
+      for (let s = 0; s < 3; s++) { freeFly('up'); await new Promise(r => setTimeout(r, 50)); }
+    }
+    else if (type === 'left') {
+      for (let s = 0; s < 3; s++) { freeFly('left'); await new Promise(r => setTimeout(r, 50)); }
+    }
+    else if (type === 'right') {
+      for (let s = 0; s < 3; s++) { freeFly('right'); await new Promise(r => setTimeout(r, 50)); }
+    }
+    else if (type === 'wait') { await new Promise(r => setTimeout(r, 1000)); }
+    await new Promise(r => setTimeout(r, 400));
+  }
+  document.querySelectorAll('#free-code-blocks .program-block').forEach(b => b.classList.remove('running'));
 }
 
 // ---- BOOT ----
