@@ -1416,13 +1416,13 @@
       </div>
       <div class="dpad">
         <div class="dpad-btn empty"></div>
-        <button class="dpad-btn" onmousedown="freeFly('up')" onmouseup="freeStop()" ontouchstart="freeFly('up')" ontouchend="freeStop()">⬆️</button>
+        <button class="dpad-btn" onmousedown="freeStartMove('up')" onmouseup="freeStopMove()" ontouchstart="freeStartMove('up')" ontouchend="freeStopMove()">⬆️</button>
         <div class="dpad-btn empty"></div>
-        <button class="dpad-btn" onmousedown="freeFly('left')" onmouseup="freeStop()" ontouchstart="freeFly('left')" ontouchend="freeStop()">⬅️</button>
+        <button class="dpad-btn" onmousedown="freeStartMove('left')" onmouseup="freeStopMove()" ontouchstart="freeStartMove('left')" ontouchend="freeStopMove()">⬅️</button>
         <button class="dpad-btn ctr" onclick="freeReset()">🔄</button>
-        <button class="dpad-btn" onmousedown="freeFly('right')" onmouseup="freeStop()" ontouchstart="freeFly('right')" ontouchend="freeStop()">➡️</button>
+        <button class="dpad-btn" onmousedown="freeStartMove('right')" onmouseup="freeStopMove()" ontouchstart="freeStartMove('right')" ontouchend="freeStopMove()">➡️</button>
         <div class="dpad-btn empty"></div>
-        <button class="dpad-btn" onmousedown="freeFly('down')" onmouseup="freeStop()" ontouchstart="freeFly('down')" ontouchend="freeStop()">⬇️</button>
+        <button class="dpad-btn" onmousedown="freeStartMove('down')" onmouseup="freeStopMove()" ontouchstart="freeStartMove('down')" ontouchend="freeStopMove()">⬇️</button>
         <div class="dpad-btn empty"></div>
       </div>
       <div class="act-btns">
@@ -1451,7 +1451,7 @@
         <div class="code-challenge" id="code-challenge">
           <div class="challenge-tip">💡 任務：寫一個程式讓無人機<br>起飛後自動巡邏一圈！</div>
           <div class="program-blocks" id="free-code-blocks"></div>
-          <button class="run-code-btn" onclick="runFreeCode()">▶ 執行</button>
+          <button class="run-code-btn" onclick="runFreeCode()">▶ 執行</button><button class="clear-code-btn" onclick="freeCodeProgram=[];renderFreeCodeWorkspace();">🗑️ 清除</button>
         </div>
       </div>
     </div>
@@ -1545,10 +1545,10 @@ function buildStageStars() {
 }
 
 // ---- NAV ----
-function showHome() { hideAll(); document.getElementById('screen-welcome').classList.add('active'); }
-function showLessons() { renderLessonSelect(); hideAll(); document.getElementById('screen-lessons').classList.add('active'); }
+function showHome() { cleanupKeyboard(); hideAll(); document.getElementById('screen-welcome').classList.add('active'); }
+function showLessons() { cleanupKeyboard(); renderLessonSelect(); hideAll(); document.getElementById('screen-lessons').classList.add('active'); }
 function showCourse() { hideAll(); document.getElementById('screen-course').classList.add('active'); }
-function showFreeFlight() { freeReset(); hideAll(); renderFreePalette(); document.getElementById('screen-freeflight').classList.add('active'); buildStageStars(); }
+function showFreeFlight() { freeReset(); cleanupKeyboard(); hideAll(); renderFreePalette(); document.getElementById('screen-freeflight').classList.add('active'); buildStageStars(); }
 function hideAll() { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); }
 
 // ---- LESSON SELECT ----
@@ -1729,7 +1729,7 @@ function addBlock(type) {
   `;
   ws.appendChild(el);
   updateWsCount();
-  playAddBlock();
+  try { try { playAddBlock(); } catch(e) {} } catch(e) {}
 }
 
 function delBlock(el) {
@@ -1844,12 +1844,12 @@ function execute(idx) {
   const block = program[idx];
   const delay = { takeoff: 600, land: 600, forward: 500, backward: 500, left: 400, right: 400, wait: 1500, repeat: 200, if: 200 }[block] || 300;
 
-  if (block === 'takeoff') { isFlying = true; updateDrone(); playTakeoff(); }
-  else if (block === 'land') { isFlying = false; updateDrone(); playLand(); }
-  else if (block === 'forward') { moveFwd(); playForward(); }
+  if (block === 'takeoff') { isFlying = true; updateDrone(); try { playTakeoff(); } catch(e) {} }
+  else if (block === 'land') { isFlying = false; updateDrone(); try { playLand(); } catch(e) {} }
+  else if (block === 'forward') { moveFwd(); try { playForward(); } catch(e) {} }
   else if (block === 'backward') moveBwd();
-  else if (block === 'left') { droneAngle = (droneAngle - 90 + 360) % 360; updateDrone(); playTurn(); }
-  else if (block === 'right') { droneAngle = (droneAngle + 90) % 360; updateDrone(); playTurn(); }
+  else if (block === 'left') { droneAngle = (droneAngle - 90 + 360) % 360; updateDrone(); try { playTurn(); } catch(e) {} }
+  else if (block === 'right') { droneAngle = (droneAngle + 90) % 360; updateDrone(); try { playTurn(); } catch(e) {} }
 
   execTimer = setTimeout(() => execute(idx + 1), delay);
 }
@@ -1906,7 +1906,7 @@ function getState() {
 
 // ---- RESULT ----
 function showResult(ok) { 
-  try { initAudio(); if (ok) playSuccess(); else playFail(); } catch(e) {}
+  try { initAudio(); if (ok) try { playSuccess(); } catch(e) {} else try { playFail(); } catch(e) {} } catch(e) {}
   const modal = document.getElementById('result-modal');
   document.getElementById('m-emoji').textContent = ok ? '🎉' : '😢';
   document.getElementById('m-title').textContent = ok ? '太棒了！' : '再試一次！';
@@ -2020,49 +2020,85 @@ function freeFly(dir) {
   if (!freeFlying) return;
   const step = freeSpeed * 0.8;
   freeLastDir = dir;
-  if (dir === 'up') freeY = Math.min(82, freeY + step);
-  if (dir === 'down') freeY = Math.max(28, freeY - step);
-  if (dir === 'left') freeX = Math.max(3, freeX - step);
-  if (dir === 'right') freeX = Math.min(97, freeX + step);
+  if (dir === 'up') { freeY = Math.min(82, freeY + step); }
+  if (dir === 'down') { freeY = Math.max(28, freeY - step); }
+  if (dir === 'left') { freeX = Math.max(3, freeX - step); }
+  if (dir === 'right') { freeX = Math.min(97, freeX + step); }
   updateFreeDrone();
 }
 
 function updateFreeDrone() {
   const d = document.getElementById('free-drone');
+  if (!d) return;
   d.style.left = freeX + '%';
   d.style.bottom = freeY + '%';
-  // Auto-rotate drone to face movement direction (third-person visual)
-  let displayAngle = freeAngle;
+  // Drone rotates to face movement direction
+  let displayAngle = 90; // default facing right
   if (freeLastDir === 'left') displayAngle = 180;
   else if (freeLastDir === 'right') displayAngle = 0;
   else if (freeLastDir === 'up') displayAngle = 90;
   else if (freeLastDir === 'down') displayAngle = 270;
   d.style.transform = `translate(-50%,0) rotate(${displayAngle}deg)`;
-  document.getElementById('free-alt-val').textContent = Math.max(0, Math.round((freeY - 28) / 54 * 100)) + '%';
-  // Update position display
+  const altEl = document.getElementById('free-alt-val');
+  if (altEl) altEl.textContent = Math.max(0, Math.round((freeY - 28) / 54 * 100)) + '%';
   const posEl = document.getElementById('free-pos');
   if (posEl) posEl.textContent = `X:${Math.round(freeX)} Y:${Math.round(freeY)}`;
 }
 
+let freeContinuousTimer = null;
+
+function freeStop() {
+  // Legacy - keep for direct calls
+  freeStopMove();
+}
+
+function freeStartMove(dir) {
+  // Start continuous movement (for mouse hold on D-pad)
+  if (!freeFlying) return;
+  freeFly(dir);
+  if (freeContinuousTimer) clearInterval(freeContinuousTimer);
+  freeContinuousTimer = setInterval(() => {
+    if (freeFlying) freeFly(dir);
+  }, 100);
+}
+
+function freeStopMove() {
+  // Stop continuous D-pad movement
+  if (freeContinuousTimer) {
+    clearInterval(freeContinuousTimer);
+    freeContinuousTimer = null;
+  }
+}
+
 function freeTakeoff() {
   freeFlying = true;
-  document.getElementById('free-drone').classList.add('flying');
+  freeStopMove();
+  const d = document.getElementById('free-drone');
+  if (d) d.classList.add('flying');
   freeY = 55;
+  freeLastDir = 'up';
   updateFreeDrone();
 }
 
 function freeLand() {
   freeFlying = false;
-  document.getElementById('free-drone').classList.remove('flying');
+  freeStopMove();
+  const d = document.getElementById('free-drone');
+  if (d) d.classList.remove('flying');
   freeY = 38;
   freeAngle = 0;
   updateFreeDrone();
 }
 
 function freeReset() {
-  freeX = 50; freeY = 38; freeAngle = 0; freeFlying = false;
-  document.getElementById('free-drone').classList.remove('flying');
+  freeX = 50; freeY = 38; freeAngle = 0; freeFlying = false; freeLastDir = 'up';
+  freeStopMove();
+  const d = document.getElementById('free-drone');
+  if (d) d.classList.remove('flying');
   updateFreeDrone();
+  // Clear code workspace
+  freeCodeProgram = [];
+  renderFreeCodeWorkspace();
 }
 
 function updateSpeed(v) {
@@ -2074,48 +2110,54 @@ function updateSpeed(v) {
 
 // ---- KEYBOARD CONTROLS (Free Flight) ----
 const keysDown = new Set();
-let freeKeyTimer = null;
+let keyIntervalId = null;
+
+function startKeyMovement() {
+  if (keyIntervalId) return;
+  keyIntervalId = setInterval(() => {
+    if (!freeFlying || keysDown.size === 0) return;
+    for (const key of keysDown) {
+      const dir = keyMap[key];
+      if (dir) freeFly(dir);
+    }
+  }, 100);
+}
+
+const keyMap = {
+  ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right',
+  w: 'up', W: 'up', s: 'down', S: 'down', a: 'left', A: 'left', d: 'right', D: 'right'
+};
 
 document.addEventListener('keydown', (e) => {
-  if (!document.getElementById('screen-freeflight').classList.contains('active')) return;
-  if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','w','a','s','d','W','A','S','D'].includes(e.key)) {
-    e.preventDefault();
-    if (!keysDown.has(e.key)) {
-      keysDown.add(e.key);
-      updateKeyVisual(e.key, true);
-      handleKeyFly(e.key);
-    }
+  // Only respond when free flight screen is active
+  const screen = document.getElementById('screen-freeflight');
+  if (!screen || !screen.classList.contains('active')) return;
+  const dir = keyMap[e.key];
+  if (!dir) return;
+  e.preventDefault();
+  if (!keysDown.has(e.key)) {
+    keysDown.add(e.key);
+    freeFly(dir); // Move once immediately
+    startKeyMovement();
   }
 });
 
 document.addEventListener('keyup', (e) => {
-  if (!document.getElementById('screen-freeflight').classList.contains('active')) return;
   keysDown.delete(e.key);
-  updateKeyVisual(e.key, false);
+  if (keysDown.size === 0 && keyIntervalId) {
+    clearInterval(keyIntervalId);
+    keyIntervalId = null;
+  }
 });
 
-function handleKeyFly(key) {
-  const dir = {ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',W:'up',s:'down',S:'down',a:'left',A:'left',d:'right',D:'right'}[key];
-  if (dir) { freeFly(dir); freeKeyTimer = setTimeout(() => handleKeyFly(key), 80); }
-}
-
-function updateKeyVisual(key, active) {
-  const map = {ArrowUp:'key-up',ArrowDown:'key-down',ArrowLeft:'key-left',ArrowRight:'key-right',w:'key-up',W:'key-up',s:'key-down',S:'key-down',a:'key-left',A:'key-left',d:'key-right',D:'key-right'};
-  const id = map[key];
-  if (!id) return;
-  const el = document.getElementById(id);
-  if (el) el.classList.toggle('pressed', active);
-}
-
-// Continuous key hold movement
-setInterval(() => {
-  if (!document.getElementById('screen-freeflight').classList.contains('active')) return;
-  if (keysDown.size === 0) return;
-  for (const key of keysDown) {
-    const dir = {ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',W:'up',s:'down',S:'down',a:'left',A:'left',d:'right',D:'right'}[key];
-    if (dir) { freeFly(dir); }
+// Clear keys when leaving the screen
+function cleanupKeyboard() {
+  keysDown.clear();
+  if (keyIntervalId) {
+    clearInterval(keyIntervalId);
+    keyIntervalId = null;
   }
-}, 120);
+}
 
 
 // ---- FREE FLIGHT CODING CHALLENGE ----
@@ -2145,13 +2187,17 @@ let freeCodeProgram = [];
 function addFreeCode(type) {
   freeCodeProgram.push(type);
   renderFreeCodeWorkspace();
-  playAddBlock();
+  try { try { playAddBlock(); } catch(e) {} } catch(e) {}
 }
 
 function renderFreeCodeWorkspace() {
   const ws = document.getElementById('free-code-blocks');
   if (!ws) return;
   ws.innerHTML = '';
+  if (freeCodeProgram.length === 0) {
+    ws.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:0.7em;text-align:center;padding:8px;">點擊上方積木加入</div>';
+    return;
+  }
   freeCodeProgram.forEach((type, i) => {
     const b = FREE_CODE_BLOCKS.find(x => x.type === type);
     if (!b) return;
@@ -2167,34 +2213,35 @@ function delFreeCode(i) {
   renderFreeCodeWorkspace();
 }
 
+let freeCodeRunning = false;
 async function runFreeCode() {
   if (freeCodeProgram.length === 0) return;
-  // Flash the drone to show it's running
+  if (freeCodeRunning) return;
+  freeCodeRunning = true;
   const drone = document.getElementById('free-drone');
-  drone.classList.add('flying');
+  if (drone) drone.classList.add('flying');
   for (let i = 0; i < freeCodeProgram.length; i++) {
     const type = freeCodeProgram[i];
-    // Highlight current block
     document.querySelectorAll('#free-code-blocks .program-block').forEach((b, idx) => {
       b.classList.remove('running');
       if (idx === i) b.classList.add('running');
     });
-    // Execute
     if (type === 'takeoff') { freeTakeoff(); }
     else if (type === 'land') { freeLand(); }
     else if (type === 'forward') {
-      for (let s = 0; s < 3; s++) { freeFly('up'); await new Promise(r => setTimeout(r, 50)); }
+      for (let s = 0; s < 5; s++) { freeFly('up'); await new Promise(r => setTimeout(r, 100)); }
     }
     else if (type === 'left') {
-      for (let s = 0; s < 3; s++) { freeFly('left'); await new Promise(r => setTimeout(r, 50)); }
+      for (let s = 0; s < 4; s++) { freeFly('left'); await new Promise(r => setTimeout(r, 100)); }
     }
     else if (type === 'right') {
-      for (let s = 0; s < 3; s++) { freeFly('right'); await new Promise(r => setTimeout(r, 50)); }
+      for (let s = 0; s < 4; s++) { freeFly('right'); await new Promise(r => setTimeout(r, 100)); }
     }
-    else if (type === 'wait') { await new Promise(r => setTimeout(r, 1000)); }
-    await new Promise(r => setTimeout(r, 400));
+    else if (type === 'wait') { await new Promise(r => setTimeout(r, 1500)); }
+    await new Promise(r => setTimeout(r, 500));
   }
   document.querySelectorAll('#free-code-blocks .program-block').forEach(b => b.classList.remove('running'));
+  freeCodeRunning = false;
 }
 
 // ---- BOOT ----
