@@ -1621,65 +1621,6 @@
     </div>
   </div></div>
 
-<!-- ===================== FREE FLIGHT ===================== -->
-<div id="screen-freeflight" class="screen">
-  <div class="free-header">
-    <button class="back-btn-header" onclick="showLessons()">⬅ 課題</button>
-    <h2>✈️ 自由飛行</h2>
-    <button class="back-btn-header" onclick="showHome()">首頁</button>
-  </div>
-  <div class="free-body">
-    <div class="free-stage" id="free-stage" onmousedown="freeShoot()" style="cursor:crosshair;">
-      <div class="stage-sky"></div>
-      <div class="stage-grid"></div>
-      <div class="stage-stars"></div>
-      <div class="stage-sun"></div>
-      <div class="stage-ground"></div>
-      <div class="stage-drone-shadow" id="free-drone-shadow"></div>
-      <div class="stage-drone" id="free-drone" style="bottom:auto;top:40%;left:50%;transform:translate(-50%,0) scale(1);z-index:10;position:absolute;">🚁</div>
-    </div>
-    <div class="free-controls-panel">
-      <div class="alt-meter">
-        <div class="alt-val" id="free-alt-val">0%</div><div class="pos-val" id="free-pos">X:50 Y:38</div>
-        <div class="alt-lbl">飛行高度</div>
-      </div>
-      <div class="dpad">
-        <div class="dpad-btn empty"></div>
-        <button class="dpad-btn" onmousedown="freeStartMove('up')" onmouseup="freeStopMove()" ontouchstart="freeStartMove('up')" ontouchend="freeStopMove()">⬆️</button>
-        <div class="dpad-btn empty"></div>
-        <button class="dpad-btn" onmousedown="freeStartMove('left')" onmouseup="freeStopMove()" ontouchstart="freeStartMove('left')" ontouchend="freeStopMove()">⬅️</button>
-        <button class="dpad-btn ctr" onclick="freeReset()">🔄</button>
-        <button class="dpad-btn" onmousedown="freeStartMove('right')" onmouseup="freeStopMove()" ontouchstart="freeStartMove('right')" ontouchend="freeStopMove()">➡️</button>
-        <div class="dpad-btn empty"></div>
-        <button class="dpad-btn" onmousedown="freeStartMove('down')" onmouseup="freeStopMove()" ontouchstart="freeStartMove('down')" ontouchend="freeStopMove()">⬇️</button>
-        <div class="dpad-btn empty"></div>
-      </div>
-      <div class="act-btns">
-        <button class="act-btn takeoff" onclick="freeTakeoff()">🚀 起飛</button>
-        <button class="act-btn land-btn" onclick="freeLand()">🛬 降落</button>
-      </div>
-      <div class="speed-ctrl">
-        <label>🚀 速度 <span id="spd-lbl">5</span></label>
-        <input type="range" min="1" max="10" value="5" id="spd-slider" oninput="updateSpeed(this.value)">
-        <div class="speed-num" id="spd-num">5</div>
-      </div>
-      <button class="free-reset-btn" onclick="freeReset()">🔄 重置</button>
-      <!-- Teaching: Key guide -->
-      <div class="teach-panel">
-        <div class="teach-title">⌨️ 鍵盤控制</div>
-        <div class="free-palette-row">
-          <div id="free-palette" class="free-palette"></div>
-        </div>
-        <div class="key-guide">
-          <div class="key-row"><span class="key-cap">W / ⬆️</span><span>向上飛</span></div>
-          <div class="key-row"><span class="key-cap">S / ⬇️</span><span>向下飛</span></div>
-          <div class="key-row"><span class="key-cap">A / ⬅️</span><span>向左飛</span></div>
-          <div class="key-row"><span class="key-cap">D / ➡️</span><span>向右飛</span></div>
-        </div>
-      </div>
-  </div>
-</div>
-
 <script>
 // ================================================================
 // DRONE COURSE - PREMIUM UI
@@ -1770,7 +1711,7 @@ function buildStageStars() {
 function showHome() { cleanupKeyboard(); hideAll(); document.getElementById('screen-welcome').classList.add('active'); }
 function showLessons() { cleanupKeyboard(); renderLessonSelect(); hideAll(); document.getElementById('screen-lessons').classList.add('active'); }
 function showCourse() { hideAll(); document.getElementById('screen-course').classList.add('active'); }
-function showFreeFlight() { freeReset(); freeZ = 50; cleanupKeyboard(); hideAll(); document.getElementById('screen-freeflight').classList.add('active'); buildStageStars(); }
+function showFreeFlight() { freeReset(); cleanupKeyboard(); hideAll(); document.getElementById('screen-freeflight').classList.add('active'); buildStageStars(); }
 function hideAll() { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); }
 
 // ---- LESSON SELECT ----
