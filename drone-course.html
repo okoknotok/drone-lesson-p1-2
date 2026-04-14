@@ -2460,27 +2460,6 @@ function freeTakeoff() {
   freeLoop();
 
 // ---- SHOOTING ----
-function freeShoot() {
-  if (freeCrashed || !freeFlying) return;
-  const bulletEl = document.createElement('div');
-  bulletEl.style.cssText = `
-    position:absolute;
-    left:${freeLaneX}%;
-    bottom:12%;
-    width:8px;
-    height:8px;
-    background:#ffe066;
-    border-radius:50%;
-    box-shadow:0 0 8px #ffe066, 0 0 16px #ff9900;
-    z-index:60;
-    pointer-events:none;
-    transform:translate(-50%,0);
-  `;
-  document.getElementById('free-stage').appendChild(bulletEl);
-  const bullet = { el: bulletEl, laneX: freeLaneX, laneY: freeLaneY, depth: 120, speed: freeSpeed * 2 };
-  freeBullets.push(bullet);
-}
-
 function updateBullets() {
   const removeBullets = [];
   for (const b of freeBullets) {
@@ -2517,7 +2496,28 @@ function updateBullets() {
     }
   }
   freeBullets = freeBullets.filter(b => !removeBullets.includes(b));
-}}
+}function freeShoot() {
+  if (freeCrashed || !freeFlying) return;
+  const bulletEl = document.createElement('div');
+  bulletEl.style.cssText = `
+    position:absolute;
+    left:${freeLaneX}%;
+    bottom:12%;
+    width:8px;
+    height:8px;
+    background:#ffe066;
+    border-radius:50%;
+    box-shadow:0 0 8px #ffe066, 0 0 16px #ff9900;
+    z-index:60;
+    pointer-events:none;
+    transform:translate(-50%,0);
+  `;
+  document.getElementById('free-stage').appendChild(bulletEl);
+  const bullet = { el: bulletEl, laneX: freeLaneX, laneY: freeLaneY, depth: 120, speed: freeSpeed * 2 };
+  freeBullets.push(bullet);
+}
+
+}
 
 function freeLand() {
   freeFlying = false;
@@ -2598,4 +2598,5 @@ function cleanupKeyboard() {
 
 init();
 
-</script>
+
+</script></script>
