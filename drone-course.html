@@ -2052,12 +2052,18 @@ function saveProgress(lesson) {
 // ---- FREE FLIGHT ----
 function freeFly(dir) {
   if (!freeFlying) return;
-  const step = freeSpeed * 0.8;
+  const step = freeSpeed * 1.2;
   freeLastDir = dir;
-  if (dir === 'up') { freeZ = Math.min(100, freeZ + step * 1.5); }
-  if (dir === 'down') { freeZ = Math.max(0, freeZ - step * 1.5); }
-  if (dir === 'left') { freeX = Math.max(5, freeX - step); }
-  if (dir === 'right') { freeX = Math.min(95, freeX + step); }
+  if (dir === 'up') {
+    // Forward into screen — drone gets BIGGER, appears to move toward horizon
+    freeZ = Math.min(100, freeZ + step * 2.2);
+  }
+  if (dir === 'down') {
+    // Backward toward camera — drone gets SMALLER, appears to come closer
+    freeZ = Math.max(0, freeZ - step * 2.2);
+  }
+  if (dir === 'left') { freeX = Math.max(5, freeX - step * 1.5); }
+  if (dir === 'right') { freeX = Math.min(95, freeX + step * 1.5); }
   updateFreeDrone3D();
 }
 
@@ -2066,10 +2072,14 @@ function updateFreeDrone() { updateFreeDrone3D(); }
 function updateFreeDrone3D() {
   const d = document.getElementById('free-drone');
   if (!d) return;
-  // 3D: freeX = strafe (5-95%), freeZ = depth (0=close/big, 100=far/small)
-  const scale = 0.7 + (freeZ / 100) * 0.8; // 0.7 to 1.5
-  const topPct = 40 + (freeZ / 100) * 15; // 40% to 55% from top
-  d.style.left = freeX + '%';
+  // 3D: freeX = strafe (5-95%), freeZ = depth (0=close/small, 100=far/big)
+  // Scale: 0.4 (far at horizon) to 2.0 (close at camera)
+  const scale = 0.4 + (freeZ / 100) * 1.6; // 0.4 to 2.0
+  // Y position: 65% (far at horizon) to 35% (close at bottom) — perspective depth
+  const topPct = 65 - (freeZ / 100) * 30; // 65% to 35%
+  // X also converges slightly toward center as drone goes far
+  const xPct = freeX * 0.85 + 7.5; // 5→12%, 50→50%, 95→88%
+  d.style.left = xPct + '%';
   d.style.bottom = 'auto';
   d.style.top = topPct + '%';
   // Rotate based on last direction
@@ -2079,6 +2089,17 @@ function updateFreeDrone3D() {
   else if (freeLastDir === 'up') displayAngle = 90;
   else if (freeLastDir === 'down') displayAngle = 270;
   d.style.transform = `translate(-50%,0) scale(${scale}) rotate(${displayAngle}deg)`;
+  // Shadow: larger when close (bigger scale), smaller when far
+  const shadowEl = document.getElementById('free-drone-shadow');
+  if (shadowEl) {
+    const shadowScale = 0.4 + (1 - freeZ / 100) * 1.2; // big when close, small when far
+    const shadowLeft = xPct;
+    const shadowBottom = 8 + (1 - freeZ / 100) * 6;
+    shadowEl.style.left = shadowLeft + '%';
+    shadowEl.style.bottom = shadowBottom + '%';
+    shadowEl.style.transform = `translate(-50%,0) scale(${shadowScale}, ${shadowScale * 0.3})`;
+    shadowEl.style.opacity = 0.3 + (1 - freeZ / 100) * 0.5;
+  }
   const altEl = document.getElementById('free-alt-val');
   if (altEl) altEl.textContent = Math.round(freeZ) + '%';
   const posEl = document.getElementById('free-pos');
