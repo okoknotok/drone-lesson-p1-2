@@ -66,79 +66,94 @@
     /* ===== CUTE DRONE CHARACTER ===== */
     .drone-char {
       position: relative;
-      width: 40px;
-      height: 40px;
+      width: 50px;
+      height: 50px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
     .drone-body {
       position: absolute;
-      width: 24px;
-      height: 16px;
+      width: 20px;
+      height: 20px;
       background: linear-gradient(135deg, #4fc3f7 0%, #0288d1 100%);
       border-radius: 50%;
       box-shadow: 0 2px 8px rgba(0,0,0,0.3), inset 0 -2px 4px rgba(0,0,0,0.2);
-      z-index: 2;
+      z-index: 3;
     }
     .drone-eye {
       position: absolute;
-      width: 8px;
-      height: 8px;
+      width: 6px;
+      height: 6px;
       background: white;
       border-radius: 50%;
-      top: 4px;
-      z-index: 3;
+      z-index: 4;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
     }
-    .drone-eye.left { left: 4px; }
-    .drone-eye.right { right: 4px; }
+    .drone-eye.left { left: 2px; top: 5px; }
+    .drone-eye.right { right: 2px; top: 5px; }
     .drone-pupil {
-      width: 4px;
-      height: 4px;
+      width: 3px;
+      height: 3px;
       background: #222;
       border-radius: 50%;
       transition: all 0.1s;
     }
     .drone-mouth {
       position: absolute;
-      bottom: 2px;
+      bottom: 3px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 3;
-      font-size: 6px;
+      z-index: 4;
+      font-size: 5px;
       line-height: 1;
     }
+    /* Four arms forming X shape */
+    .drone-arm {
+      position: absolute;
+      width: 18px;
+      height: 3px;
+      background: linear-gradient(90deg, #546e7a 0%, #78909c 50%, #546e7a 100%);
+      border-radius: 2px;
+      z-index: 1;
+    }
+    /* Four propellers at X positions */
     .drone-prop {
       position: absolute;
-      width: 22px;
-      height: 5px;
+      width: 18px;
+      height: 4px;
       background: linear-gradient(90deg, #81d4fa 0%, #4fc3f7 50%, #81d4fa 100%);
       border-radius: 3px;
-      top: 50%;
-      margin-top: -2.5px;
-      z-index: 1;
+      z-index: 2;
       box-shadow: 0 1px 4px rgba(0,0,0,0.2);
     }
     .drone-prop::after {
       content: '';
       position: absolute;
-      width: 5px;
-      height: 5px;
+      width: 4px;
+      height: 4px;
       background: #0288d1;
       border-radius: 50%;
       top: 0;
       left: 50%;
-      margin-left: -2.5px;
+      margin-left: -2px;
     }
-    .drone-prop.prop-h { transform: rotate(90deg); }
-    @keyframes prop-spin-h { from { transform: rotate(90deg); } to { transform: rotate(450deg); } }
-    @keyframes prop-spin-v { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    .drone-char.flying .drone-prop.prop-h { animation: prop-spin-h 0.12s linear infinite; }
-    .drone-char.flying .drone-prop.prop-v { animation: prop-spin-v 0.12s linear infinite; }
+    /* X-shaped propeller positions */
+    .drone-prop.prop-bl { top: 58%; left: -8px; transform: rotate(-45deg); }
+    .drone-prop.prop-br { top: 58%; right: -8px; transform: rotate(45deg); }
+    .drone-prop.prop-fl { bottom: 58%; left: -8px; transform: rotate(45deg); }
+    .drone-prop.prop-fr { bottom: 58%; right: -8px; transform: rotate(-45deg); }
+    @keyframes prop-spin-bl { from { transform: rotate(-45deg); } to { transform: rotate(-405deg); } }
+    @keyframes prop-spin-br { from { transform: rotate(45deg); } to { transform: rotate(405deg); } }
+    @keyframes prop-spin-fl { from { transform: rotate(45deg); } to { transform: rotate(-315deg); } }
+    @keyframes prop-spin-fr { from { transform: rotate(-45deg); } to { transform: rotate(-405deg); } }
+    .drone-char.flying .drone-prop.prop-bl { animation: prop-spin-bl 0.12s linear infinite; }
+    .drone-char.flying .drone-prop.prop-br { animation: prop-spin-br 0.12s linear infinite; }
+    .drone-char.flying .drone-prop.prop-fl { animation: prop-spin-fl 0.12s linear infinite; }
+    .drone-char.flying .drone-prop.prop-fr { animation: prop-spin-fr 0.12s linear infinite; }
     /* Drone expressions */
     .drone-char .drone-mouth { transition: all 0.2s; }
     .drone-char.happy .drone-mouth::before { content: '‿'; }
@@ -154,10 +169,11 @@
       height: 4px;
       background: #ef5350;
       border-radius: 50%;
-      top: -1px;
+      top: 50%;
       left: 50%;
+      margin-top: -2px;
       margin-left: -2px;
-      z-index: 4;
+      z-index: 5;
       animation: led-blink 1s infinite alternate;
     }
     @keyframes led-blink { from { opacity: 0.4; } to { opacity: 1; box-shadow: 0 0 6px #ef5350; } }
@@ -1614,6 +1630,83 @@
     }
     .speed-ctrl label { display: block; text-align: center; color: rgba(255,255,255,0.6); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; }
     .speed-ctrl input[type=range] { width: 100%; accent-color: var(--accent); }
+    /* ===== FREE MODE & DIFFICULTY BAR ===== */
+    .free-mode-bar {
+      background: rgba(0,0,0,0.3);
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      border-bottom: 2px solid rgba(102,126,234,0.2);
+    }
+    .mode-btn {
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.6);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.85em;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .mode-btn.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-color: var(--accent);
+      color: white;
+    }
+    .difficulty-bar { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+    .diff-lbl { color: rgba(255,255,255,0.5); font-size: 0.8em; font-weight: 700; }
+    .diff-btn {
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.5);
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      font-size: 1.1em;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .diff-btn.active { background: rgba(100,200,100,0.3); border-color: #43a047; }
+    .diff-btn:hover { transform: scale(1.15); }
+    /* Program mode workspace in free flight */
+    #free-program-workspace {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      padding: 10px;
+      background: rgba(0,0,0,0.25);
+      border-radius: 12px;
+      min-height: 120px;
+    }
+    #free-program-workspace.active { display: flex; }
+    .free-prog-blocks { display: flex; flex-wrap: wrap; gap: 4px; min-height: 50px; }
+    .free-prog-block {
+      background: rgba(102,126,234,0.3);
+      border: 2px solid rgba(102,126,234,0.5);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 0.8em;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .free-prog-block:hover { background: rgba(102,126,234,0.5); }
+    .free-prog-block.done { opacity: 0.5; text-decoration: line-through; }
+    .free-prog-block.running { background: rgba(255,200,0,0.3); border-color: #ffd700; }
+    #free-palette { display: flex; flex-wrap: wrap; gap: 4px; }
+    #free-palette .palette-block {
+      font-size: 0.7em; padding: 5px 8px; cursor: pointer;
+    }
+    /* Hide keyboard controls in program mode */
+    .free-controls-panel.keyboard-hidden { display: none !important; }
+    .free-stage.program-mode .dpad { display: none; }
+    .free-stage.program-mode .act-btns { display: none; }
+    .free-stage.program-mode .speed-control { display: none; }
+
+
     .speed-num { text-align: center; font-size: 1.4em; font-weight: 900; color: var(--accent); margin-top: 5px; }
     .free-reset-btn {
       background: linear-gradient(135deg, #ff6b6b, #ff8e53);
@@ -1705,8 +1798,11 @@
       <div class="stage-hud" id="stage-hud">❌ 障礙物</div>
       <div class="stage-drone" id="stage-drone" style="bottom:38%;left:50%;transform:translate(-50%,0);">
   <div class="drone-char idle">
-    <div class="drone-prop prop-h"></div>
-    <div class="drone-prop prop-v"></div>
+    <div class="drone-arm"></div>
+    <div class="drone-prop prop-bl"></div>
+    <div class="drone-prop prop-br"></div>
+    <div class="drone-prop prop-fl"></div>
+    <div class="drone-prop prop-fr"></div>
     <div class="drone-body"></div>
     <div class="drone-led"></div>
     <div class="drone-eye left"><div class="drone-pupil"></div></div>
@@ -1736,6 +1832,16 @@
     <h2>✈️ 自由飛行</h2>
     <button class="back-btn-header" onclick="showHome()">首頁</button>
   </div>
+  <div class="free-mode-bar">
+    <button class="mode-btn active" id="mode-keyboard-btn" onclick="setFreeMode('keyboard')">🎮 鍵盤控制</button>
+    <button class="mode-btn" id="mode-program-btn" onclick="setFreeMode('program')">🧩 編程模式</button>
+    <div class="difficulty-bar">
+      <span class="diff-lbl">難度：</span>
+      <button class="diff-btn active" onclick="setFreeDifficulty('easy')">🌱</button>
+      <button class="diff-btn" onclick="setFreeDifficulty('normal')">🌿</button>
+      <button class="diff-btn" onclick="setFreeDifficulty('hard')">🔥</button>
+    </div>
+  </div>
   <div class="free-body">
     <div class="free-stage" id="free-stage" onmousedown="freeShoot()" style="cursor:crosshair;">
       <!-- Horizon atmosphere -->
@@ -1761,8 +1867,11 @@
       <!-- Drone (third-person view: bottom center) -->
       <div class="free-drone" id="free-drone">
   <div class="drone-char idle">
-    <div class="drone-prop prop-h"></div>
-    <div class="drone-prop prop-v"></div>
+    <div class="drone-arm"></div>
+    <div class="drone-prop prop-bl"></div>
+    <div class="drone-prop prop-br"></div>
+    <div class="drone-prop prop-fl"></div>
+    <div class="drone-prop prop-fr"></div>
     <div class="drone-body"></div>
     <div class="drone-led"></div>
     <div class="drone-eye left"><div class="drone-pupil"></div></div>
@@ -1772,6 +1881,17 @@
 </div>
     </div>
     <div class="free-controls-panel">
+      <div id="free-program-workspace" class="free-prog-workspace">
+        <div style="font-size:0.8em;color:rgba(255,255,255,0.5);margin-bottom:6px;">📋 飛行計劃</div>
+        <div id="free-palette"></div>
+        <div class="free-prog-blocks" id="free-prog-blocks"></div>
+        <div style="font-size:0.75em;color:rgba(255,255,255,0.4);margin-top:4px;" id="free-ws-count">0 個積木</div>
+        <div style="display:flex;gap:6px;margin-top:8px;">
+          <button class="ctrl-btn run" onclick="runFreeProgram()" style="flex:1;padding:6px;font-size:0.8em;">▶ 執行</button>
+          <button class="ctrl-btn clear" onclick="clearFreeProgram()" style="padding:6px;font-size:0.8em;">🗑️</button>
+        </div>
+      </div>
+      <div class="alt-meter">
       <div class="alt-meter">
         <div class="alt-val" id="free-dist-val">0</div>
         <div class="alt-lbl">飛行距離</div>
@@ -1828,7 +1948,9 @@ const BLOCK = {
   right:     { icon: '➡️', label: '右轉', cls: 'right' },
   wait:      { icon: '⏱️', label: '等候', cls: 'wait' },
   repeat:    { icon: '🔄', label: '重複', cls: 'repeat' },
-  if:        { icon: '⚠️', label: '如果', cls: 'if' }
+  set:       { icon: '📦', label: '設定高度', cls: 'set' },
+  if:        { icon: '⚠️', label: '如果', cls: 'if' },
+  height:    { icon: '📏', label: '目前高度', cls: 'height' }
 };
 
 const LESSONS = {
@@ -1836,10 +1958,11 @@ const LESSONS = {
   2: { title: '第2課：走一個正方形', task: '讓無人機走一圈回到起點！', palette: ['takeoff','forward','left','land'], start: {x:50,y:38,a:90}, obs: [], chk: s => s.returned },
   3: { title: '第3課：認識重複 🔄', task: '用「重複」積木，讓無人機巡邏直線！', palette: ['takeoff','forward','repeat','wait','land'], start: {x:12,y:38,a:90}, obs: [], chk: s => s.dist >= 180 },
   4: { title: '第4課：等候 ⏱️', task: '起飛 → 等候 → 降落！', palette: ['takeoff','wait','land'], start: {x:50,y:38,a:90}, obs: [], chk: s => s.done },
-  5: { title: '第5課：如果...就... ⚠️', task: '遇到障礙物時，轉向繞開它！', palette: ['takeoff','forward','left','right','if','land'], start: {x:12,y:38,a:90}, obs: [{x:55,y:38,e:'🪨',r:14}], chk: s => s.avoided },
-  6: { title: '第6課：我的飛行計劃 ✈️', task: '自由創作！設計自己的飛行路線！', palette: ['takeoff','forward','backward','left','right','wait','repeat','land'], start: {x:50,y:38,a:90}, obs: [], chk: s => s.len >= 3 },
-  7: { title: '第7課：穿越雲層 ☁️', task: '穿過所有雲層，不要撞到！', palette: ['takeoff','forward','left','right','land'], start: {x:8,y:38,a:90}, obs: [{x:28,y:38,e:'☁️',r:11},{x:50,y:38,e:'☁️',r:11},{x:72,y:38,e:'☁️',r:11}], chk: s => s.clouds >= 3 },
-  8: { title: '第8課：緊急救援 🚨', task: '繞過障礙，到達紅色目標！', palette: ['takeoff','forward','left','right','repeat','land'], start: {x:8,y:38,a:90}, obs: [{x:28,y:38,e:'🪨',r:10},{x:50,y:38,e:'☁️',r:10},{x:72,y:38,e:'🪨',r:10}], chk: s => s.target, target: {x:88,y:38} }
+  5: { title: '第5課：設定高度 📦', task: '起飛後，用「設定高度」積木改變高度！', palette: ['takeoff','set','forward','land'], start: {x:50,y:38,a:90}, obs: [], chk: s => s.heightSet },
+  6: { title: '第6課：感測器 ⚠️', task: '偵測到障礙物時会自动轉向！', palette: ['takeoff','forward','left','right','if','land'], start: {x:12,y:38,a:90}, obs: [{x:55,y:38,e:'🪨',r:14}], chk: s => s.avoided },
+  7: { title: '第7課：我的飛行計劃 ✈️', task: '自由創作！設計自己的飛行路線！', palette: ['takeoff','forward','backward','left','right','wait','repeat','land'], start: {x:50,y:38,a:90}, obs: [], chk: s => s.len >= 3 },
+  8: { title: '第8課：穿越雲層 ☁️', task: '穿過所有雲層，不要撞到！', palette: ['takeoff','forward','left','right','land'], start: {x:8,y:38,a:90}, obs: [{x:28,y:38,e:'☁️',r:11},{x:50,y:38,e:'☁️',r:11},{x:72,y:38,e:'☁️',r:11}], chk: s => s.clouds >= 3 },
+  9: { title: '第9課：緊急救援 🚨', task: '繞過障礙，到達紅色目標！', palette: ['takeoff','forward','left','right','repeat','land'], start: {x:8,y:38,a:90}, obs: [{x:28,y:38,e:'🪨',r:10},{x:50,y:38,e:'☁️',r:10},{x:72,y:38,e:'🪨',r:10}], chk: s => s.target, target: {x:88,y:38} }
 };
 
 const HINTS = {
@@ -1847,10 +1970,11 @@ const HINTS = {
   2: ['正方形要走 4 條邊，每條邊都是前進 + 左轉', '試試：起飛→前進→左轉→前進→左轉→前進→左轉→前進→左轉→降落', '答案是：起飛 → 前進×4 → 左轉×4 → 降落'],
   3: ['向前走夠遠就完成，4 次前進試試看！', '4 次前進等於走了 60 步，已經很遠了', '試試：起飛 → 前進×4 → 降落'],
   4: ['按順序：起飛 → 等候 → 降落', '等候 就是讓無人機在空中停一停', '就是這麼簡單：起飛 → 等候 → 降落'],
-  5: ['障礙物在前面，要一直前進繞開！', '一直前進就可以越過障礙物', '試試：起飛 → 前進×5 → 降落'],
-  6: ['這課沒有固定答案，自由發揮吧！', '用不同積木組合，創造獨特路線', '最少加入 3 個積木就可以完成'],
-  7: ['雲層在正前方，要走 5 次前進才能穿過！', '5 次前進可以穿過所有雲層', '試試：起飛 → 前進×5 → 降落'],
-  8: ['一直前進就能到達 🎯 目標！', '5 次前進就可以到達', '試試：起飛 → 前進×5 → 降落']
+  5: ['按一下「📦 設定高度」，然后选 20 或 30！', '高度设好后前進看看有什麼不同', '試試：起飛 → 設定高度(20) → 前進 → 降落'],
+  6: ['障礙物在前面，一直前進就會自動繞開！', '前進時如果感測到障礙，就轉向', '試試：起飛 → 前進×5 → 降落'],
+  7: ['這課沒有固定答案，自由發揮吧！', '用不同積木組合，創造獨特路線', '最少加入 3 個積木就可以完成'],
+  8: ['雲層在正前方，要走 5 次前進才能穿過！', '5 次前進可以穿過所有雲層', '試試：起飛 → 前進×5 → 降落'],
+  9: ['一直前進就能到達 🎯 目標！', '5 次前進就可以到達', '試試：起飛 → 前進×5 → 降落']
 };
 
 // ---- INIT ----
@@ -1899,7 +2023,7 @@ function renderLessonSelect() {
   // Progress dots
   const dotsEl = document.getElementById('progress-dots');
   dotsEl.innerHTML = '';
-  for (let i = 1; i <= 8; i++) {
+  for (let i = 1; i <= 9; i++) {
     const d = document.createElement('div');
     d.className = 'progress-dot';
     d.textContent = i;
@@ -1910,13 +2034,13 @@ function renderLessonSelect() {
   // Cards
   const grid = document.getElementById('lesson-grid');
   grid.innerHTML = '';
-  const tags = {0:'tag', 1:'tag', 2:'tag', 3:'tag', 4:'tag', 5:'tag practice', 6:'tag challenge', 7:'tag challenge'};
-  const titles = ['起飛！','走一個正方形','認識重複','等候','如果...就...','我的飛行計劃','穿越雲層','緊急救援'];
-  const emojis = ['🚀','⬆️⬇️⬅️➡️','🔄','⏱️','⚠️','✈️','☁️','🚨'];
-  const tasks = ['讓無人機飛起來','走一圈回到起點','用重複積木巡邏','起飛→等候→降落','繞開障礙物','自由設計路線','穿過雲層','到達紅色目標'];
+  const tags = {0:'tag',1:'tag',2:'tag',3:'tag',4:'tag',5:'tag',6:'tag practice',7:'tag challenge',8:'tag challenge'};
+  const titles = ['起飛！','走一個正方形','認識重複','等候','設定高度','感測器','我的飛行計劃','穿越雲層','緊急救援'];
+  const emojis = ['🚀','⬆️⬇️⬅️➡️','🔄','⏱️','📦','⚠️','✈️','☁️','🚨'];
+  const tasks = ['讓無人機飛起來','走一圈回到起點','用重複積木巡邏','起飛→等候→降落','改變飛行高度','自動繞開障礙','自由設計路線','穿過雲層','到達紅色目標'];
   const saved = getSavedProgress();
 
-  for (let i = 1; i <= 8; i++) {
+  for (let i = 1; i <= 9; i++) {
     const card = document.createElement('div');
     card.className = 'lesson-card';
     card.onclick = () => startLesson(i);
@@ -1925,7 +2049,7 @@ function renderLessonSelect() {
       <div class="emoji">${emojis[i-1]}</div>
       <h3>第${i}課</h3>
       <p>${tasks[i-1]}</p>
-      <span class="${tags[i-1]}">${['','','積木','積木','積木','自由創作','虛擬挑戰','虛擬挑戰'][i-1]}</span>
+      <span class="${tags[i-1]}">${['','','積木','積木','積木','自由創作','虛擬挑戰','虛擬挑戰','虛擬挑戰'][i-1]}</span>
     `;
     grid.appendChild(card);
   }
@@ -2189,7 +2313,8 @@ function execute(idx) {
   });
 
   const block = program[idx];
-  const delay = { takeoff: 600, land: 600, forward: 500, backward: 500, left: 400, right: 400, wait: 1500, repeat: 200, if: 200 }[block] || 300;
+  const delay = { takeoff: 600, land: 600, forward: 500, backward: 500, left: 400, right: 400, wait: 1500, repeat: 200, set: 400, if: 200, height: 200 }[block] || 300;
+
 
   if (block === 'takeoff') { isFlying = true; updateDrone(); try { playTakeoff(); } catch(e) {} }
   else if (block === 'land') { isFlying = false; updateDrone(); try { playLand(); } catch(e) {} }
@@ -2197,6 +2322,7 @@ function execute(idx) {
   else if (block === 'backward') moveBwd();
   else if (block === 'left') { droneAngle = (droneAngle - 90 + 360) % 360; updateDrone(); try { playTurn(); } catch(e) {} }
   else if (block === 'right') { droneAngle = (droneAngle + 90) % 360; updateDrone(); try { playTurn(); } catch(e) {} }
+  else if (block === 'set') { droneY = Math.max(28, droneY - 8); isFlying = true; updateDrone(); }
 
   execTimer = setTimeout(() => execute(idx + 1), delay);
 }
@@ -2244,10 +2370,11 @@ function getState() {
     returned: curLesson === 2 && !isFlying && droneX >= 43 && droneX <= 57 && droneY >= 33 && droneY <= 43,
     dist: (Math.abs(droneX - L.start.x) + Math.abs(droneY - L.start.y)) * 4,
     done: curLesson === 4 && !isFlying && program.length >= 3,
-    avoided: curLesson === 5 && droneX > 62,
+    heightSet: curLesson === 5 && droneY < 33,  // changed height (moved up)
+    avoided: curLesson === 6 && droneX > 62,
     len: program.length,
-    clouds: curLesson === 7 ? Math.max(0, Math.min(3, Math.floor((droneX - 22) / 20))) : 0,
-    target: curLesson === 8 && droneX >= 78
+    clouds: curLesson === 8 ? Math.max(0, Math.min(3, Math.floor((droneX - 22) / 20))) : 0,
+    target: curLesson === 9 && droneX >= 78
   };
 }
 
@@ -2324,10 +2451,11 @@ function getDemoSeq(lesson) {
     case 2: return ['fwd','left','fwd','left','fwd','left','fwd','left'];
     case 3: return ['fwd','fwd','fwd','fwd','fwd','fwd','fwd','fwd','fwd','fwd','fwd'];
     case 4: return ['fwd','wait'];
-    case 5: return ['fwd','fwd','fwd','fwd','fwd','fwd','fwd','fwd','fwd','left','fwd','fwd','fwd','fwd','fwd'];
-    case 6: return ['fwd','fwd','fwd'];
-    case 7: return ['fwd','fwd','fwd','fwd','fwd','fwd','fwd','fwd','fwd','left','fwd','fwd','fwd','fwd','fwd','fwd'];
-    case 8: return ['fwd','fwd','fwd','fwd','fwd','fwd','left','fwd','fwd','fwd','fwd'];
+    case 5: return ['fwd','fwd','fwd','fwd','fwd'];
+    case 6: return ['fwd','fwd','fwd','fwd','fwd','fwd','fwd','fwd','fwd','left','fwd','fwd','fwd','fwd','fwd'];
+    case 7: return ['fwd','fwd','fwd'];
+    case 8: return ['fwd','fwd','fwd','fwd','fwd','fwd','fwd','fwd','fwd','left','fwd','fwd','fwd','fwd','fwd','fwd'];
+    case 9: return ['fwd','fwd','fwd','fwd','fwd','fwd','left','fwd','fwd','fwd','fwd'];
     default: return [];
   }
 }
@@ -2343,7 +2471,7 @@ function showResult(ok) {
   if (ok) {
     // Progress not tracked
     attempts = 0;
-    document.getElementById('m-btn').textContent = curLesson < 8 ? '下一課 ➡' : '完成！🏆';
+    document.getElementById('m-btn').textContent = curLesson < 9 ? '下一課 ➡' : '完成！🏆';
     document.getElementById('m-btn').className = 'm-btn next';
     spawnConfetti();
   } else {
@@ -2360,7 +2488,7 @@ function showResult(ok) {
 
 function handleModalBtn() {
   document.getElementById('result-modal').classList.remove('active');
-  if (lessonDone && curLesson < 8) startLesson(curLesson + 1);
+  if (lessonDone && curLesson < 9) startLesson(curLesson + 1);
   else if (lessonDone) showLessons();
   else resetDrone();
 }
@@ -2460,6 +2588,98 @@ let freeCrashed_once = false;
 
 let freeBullets = [];   // {x, y, el} projectile elements
 let freeScore = 0;     // hit counter
+
+// Free flight modes
+let freeMode = 'keyboard';  // 'keyboard' or 'program'
+let freeDifficulty = 'easy';  // 'easy', 'normal', 'hard'
+let freeProgram = [];  // blocks in program mode
+let freeProgIdx = 0;
+let freeProgTimer = null;
+
+// ---- FREE MODE & DIFFICULTY ----
+function setFreeMode(mode) {
+  freeMode = mode;
+  document.getElementById('mode-keyboard-btn').classList.toggle('active', mode === 'keyboard');
+  document.getElementById('mode-program-btn').classList.toggle('active', mode === 'program');
+  document.getElementById('free-program-workspace').classList.toggle('active', mode === 'program');
+  document.getElementById('free-stage').classList.toggle('program-mode', mode === 'program');
+  document.querySelector('.free-controls-panel').classList.toggle('keyboard-hidden', mode === 'program');
+  if (mode === 'program') {
+    if (!freeFlying) freeTakeoff();
+    buildFreePalette();
+    renderFreeProgram();
+  }
+}
+
+function setFreeDifficulty(diff) {
+  freeDifficulty = diff;
+  document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+  event && event.target && event.target.classList.add('active');
+  // Adjust obstacle density and speed based on difficulty
+  if (diff === 'easy') { freeSpeed = 4; freeDepthMax = 120; }
+  else if (diff === 'normal') { freeSpeed = 7; freeDepthMax = 110; }
+  else { freeSpeed = 10; freeDepthMax = 100; }
+}
+
+// ---- FREE PROGRAM MODE ----
+const FREE_BLOCKS = ['takeoff','forward','backward','left','right','wait','repeat'];
+
+function buildFreePalette() {
+  const pal = document.getElementById('free-palette');
+  if (!pal) return;
+  pal.innerHTML = '';
+  FREE_BLOCKS.forEach(b => {
+    const d = BLOCK[b];
+    const btn = document.createElement('button');
+    btn.className = 'palette-block ' + d.cls;
+    btn.innerHTML = '<span class=icon>'+d.icon+'</span><span class=lbl>'+d.label+'</span>';
+    btn.onclick = () => { freeProgram.push(b); renderFreeProgram(); };
+    pal.appendChild(btn);
+  });
+}
+
+function renderFreeProgram() {
+  const ws = document.getElementById('free-prog-blocks');
+  if (!ws) return;
+  ws.innerHTML = '';
+  freeProgram.forEach((b, i) => {
+    const d = BLOCK[b];
+    const el = document.createElement('div');
+    el.className = 'free-prog-block';
+    if (i < freeProgIdx) el.classList.add('done');
+    else if (i === freeProgIdx) el.classList.add('running');
+    el.innerHTML = '<span>'+d.icon+'</span><span>'+d.label+'</span>';
+    el.onclick = () => { freeProgram.splice(i, 1); renderFreeProgram(); };
+    ws.appendChild(el);
+  });
+  document.getElementById('free-ws-count').textContent = freeProgram.length + ' 個積木';
+}
+
+function runFreeProgram() {
+  if (freeProgTimer) clearTimeout(freeProgTimer);
+  freeProgIdx = 0;
+  runFreeNext();
+}
+
+function runFreeNext() {
+  if (freeProgIdx >= freeProgram.length) {
+    freeProgIdx = 0;
+    return;
+  }
+  const block = freeProgram[freeProgIdx];
+  const delay = { takeoff: 600, land: 600, forward: 500, backward: 500, left: 400, right: 400, wait: 1500, repeat: 200 }[block] || 300;
+  if (block === 'takeoff') { freeFlying = true; }
+  else if (block === 'forward') { freeLaneX = Math.min(85, freeLaneX + 6); }
+  else if (block === 'backward') { freeLaneX = Math.max(15, freeLaneX - 6); }
+  else if (block === 'left') { /* noop in free flight */ }
+  else if (block === 'right') { /* noop */ }
+  else if (block === 'wait') { }
+  renderFreeProgram();
+  freeProgTimer = setTimeout(runFreeNext, delay);
+  freeProgIdx++;
+}
+
+function clearFreeProgram() { freeProgram = []; freeProgIdx = 0; renderFreeProgram(); }
 
 // ---- INIT ----
 function showFreeFlight() {
