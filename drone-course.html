@@ -66,102 +66,199 @@
     /* ===== CUTE DRONE CHARACTER ===== */
     .drone-char {
       position: relative;
-      width: 50px;
-      height: 50px;
+      width: 56px;
+      height: 56px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
+    /* Central body — slightly taller, with vent lines */
     .drone-body {
       position: absolute;
-      width: 20px;
-      height: 20px;
-      background: linear-gradient(135deg, #4fc3f7 0%, #0288d1 100%);
-      border-radius: 50%;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3), inset 0 -2px 4px rgba(0,0,0,0.2);
-      z-index: 3;
+      width: 22px;
+      height: 16px;
+      background: linear-gradient(135deg, #4fc3f7 0%, #0288d1 60%, #0277bd 100%);
+      border-radius: 30% 30% 40% 40%;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.4), inset 0 -3px 6px rgba(0,0,0,0.2);
+      z-index: 4;
     }
+    /* Body vent slots (heat dissipation) */
+    .drone-body::before {
+      content: '';
+      position: absolute;
+      top: 4px;
+      left: 3px;
+      right: 3px;
+      height: 2px;
+      background: rgba(0,0,0,0.25);
+      border-radius: 1px;
+    }
+    .drone-body::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      left: 3px;
+      right: 3px;
+      height: 2px;
+      background: rgba(0,0,0,0.25);
+      border-radius: 1px;
+    }
+    /* Front vision camera (replaces eyes) */
     .drone-eye {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: radial-gradient(circle at 30% 30%, #90caf9, #1565c0);
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.4);
+      z-index: 5;
+      box-shadow: 0 0 4px rgba(100,180,255,0.8), inset 0 1px 2px rgba(255,255,255,0.5);
+    }
+    .drone-eye.left { left: -4px; top: 50%; margin-top: -4px; }
+    .drone-eye.right { right: -4px; top: 50%; margin-top: -4px; }
+    .drone-pupil {
+      display: none; /* camera lens doesn't need pupil */
+    }
+    .drone-mouth {
+      display: none; /* no mouth on realistic drone */
+    }
+    /* Four arms — thicker, realistic */
+    .drone-arm {
+      position: absolute;
+      width: 24px;
+      height: 5px;
+      background: linear-gradient(180deg, #78909c 0%, #546e7a 50%, #455a64 100%);
+      border-radius: 3px;
+      z-index: 1;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    /* Motor hub at end of each arm */
+    .drone-arm::after {
+      content: '';
       position: absolute;
       width: 6px;
       height: 6px;
-      background: white;
+      background: radial-gradient(circle at 40% 40%, #90a4ae, #455a64);
       border-radius: 50%;
-      z-index: 4;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
+      right: -3px;
+      top: 50%;
+      margin-top: -3px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
     }
-    .drone-eye.left { left: 2px; top: 5px; }
-    .drone-eye.right { right: 2px; top: 5px; }
-    .drone-pupil {
-      width: 3px;
-      height: 3px;
-      background: #222;
-      border-radius: 50%;
-      transition: all 0.1s;
-    }
-    .drone-mouth {
-      position: absolute;
-      bottom: 3px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 4;
-      font-size: 5px;
-      line-height: 1;
-    }
-    /* Four arms forming X shape */
-    .drone-arm {
-      position: absolute;
-      width: 18px;
-      height: 3px;
-      background: linear-gradient(90deg, #546e7a 0%, #78909c 50%, #546e7a 100%);
-      border-radius: 2px;
-      z-index: 1;
-    }
-    /* Four propellers at X positions */
+    /* Four propeller mounts at X positions */
     .drone-prop {
       position: absolute;
-      width: 18px;
-      height: 4px;
-      background: linear-gradient(90deg, #81d4fa 0%, #4fc3f7 50%, #81d4fa 100%);
+      width: 20px;
+      height: 5px;
+      background: linear-gradient(90deg, rgba(129,212,250,0.9), rgba(79,195,247,0.9) 50%, rgba(129,212,250,0.9));
       border-radius: 3px;
       z-index: 2;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
     }
     .drone-prop::after {
       content: '';
       position: absolute;
-      width: 4px;
-      height: 4px;
-      background: #0288d1;
+      width: 5px;
+      height: 5px;
+      background: radial-gradient(circle at 40% 40%, #4fc3f7, #0277bd);
       border-radius: 50%;
       top: 0;
       left: 50%;
-      margin-left: -2px;
+      margin-left: -2.5px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
     }
     /* X-shaped propeller positions */
-    .drone-prop.prop-bl { top: 58%; left: -8px; transform: rotate(-45deg); }
-    .drone-prop.prop-br { top: 58%; right: -8px; transform: rotate(45deg); }
-    .drone-prop.prop-fl { bottom: 58%; left: -8px; transform: rotate(45deg); }
-    .drone-prop.prop-fr { bottom: 58%; right: -8px; transform: rotate(-45deg); }
+    .drone-prop.prop-bl { top: 52%; left: -12px; transform: rotate(-45deg); }
+    .drone-prop.prop-br { top: 52%; right: -12px; transform: rotate(45deg); }
+    .drone-prop.prop-fl { bottom: 52%; left: -12px; transform: rotate(45deg); }
+    .drone-prop.prop-fr { bottom: 52%; right: -12px; transform: rotate(-45deg); }
     @keyframes prop-spin-bl { from { transform: rotate(-45deg); } to { transform: rotate(-405deg); } }
     @keyframes prop-spin-br { from { transform: rotate(45deg); } to { transform: rotate(405deg); } }
     @keyframes prop-spin-fl { from { transform: rotate(45deg); } to { transform: rotate(-315deg); } }
     @keyframes prop-spin-fr { from { transform: rotate(-45deg); } to { transform: rotate(-405deg); } }
-    .drone-char.flying .drone-prop.prop-bl { animation: prop-spin-bl 0.12s linear infinite; }
-    .drone-char.flying .drone-prop.prop-br { animation: prop-spin-br 0.12s linear infinite; }
-    .drone-char.flying .drone-prop.prop-fl { animation: prop-spin-fl 0.12s linear infinite; }
-    .drone-char.flying .drone-prop.prop-fr { animation: prop-spin-fr 0.12s linear infinite; }
-    /* Drone expressions */
-    .drone-char .drone-mouth { transition: all 0.2s; }
-    .drone-char.happy .drone-mouth::before { content: '‿'; }
-    .drone-char.sad .drone-mouth::before { content: '︵'; }
-    .drone-char.excited .drone-mouth::before { content: '◡'; }
-    .drone-char.excited .drone-eye { transform: scale(1.2); }
-    .drone-char.idle .drone-pupil { animation: blink 3s infinite; }
-    @keyframes blink { 0%,90%,100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
+    .drone-char.flying .drone-prop.prop-bl { animation: prop-spin-bl 0.1s linear infinite; }
+    .drone-char.flying .drone-prop.prop-br { animation: prop-spin-br 0.1s linear infinite; }
+    .drone-char.flying .drone-prop.prop-fl { animation: prop-spin-fl 0.1s linear infinite; }
+    .drone-char.flying .drone-prop.prop-fr { animation: prop-spin-fr 0.1s linear infinite; }
+    /* Gimbal camera under body */
+    .drone-gimbal {
+      position: absolute;
+      width: 8px;
+      height: 3px;
+      background: #37474f;
+      border-radius: 2px;
+      bottom: -2px;
+      left: 50%;
+      margin-left: -4px;
+      z-index: 3;
+    }
+    .drone-camera {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: radial-gradient(circle at 35% 35%, #90a4ae, #263238);
+      border-radius: 50%;
+      border: 1px solid #546e7a;
+      bottom: -7px;
+      left: 50%;
+      margin-left: -5px;
+      z-index: 3;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    }
+    .drone-camera::after {
+      content: '';
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      background: radial-gradient(circle, #1a237e, #000);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      margin-top: -2.5px;
+      margin-left: -2.5px;
+    }
+    /* Landing gear — two curved legs */
+    .drone-leg {
+      position: absolute;
+      width: 16px;
+      height: 4px;
+      background: linear-gradient(180deg, #607d8b, #455a64);
+      border-radius: 2px;
+      z-index: 1;
+    }
+    .drone-leg.left {
+      bottom: -10px;
+      left: 6px;
+      transform: rotate(-15deg);
+    }
+    .drone-leg.right {
+      bottom: -10px;
+      right: 6px;
+      transform: rotate(15deg);
+    }
+    .drone-leg::after {
+      content: '';
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #37474f;
+      border-radius: 50%;
+      bottom: -3px;
+      left: 50%;
+      margin-left: -3px;
+    }
+    /* Bottom obstacle-avoidance sensor (ultrasonic) */
+    .drone-sensor {
+      position: absolute;
+      width: 8px;
+      height: 5px;
+      background: radial-gradient(ellipse, #37474f, #263238);
+      border-radius: 50%;
+      bottom: -4px;
+      left: 50%;
+      margin-left: -4px;
+      z-index: 3;
+    }
     /* Drone LED light */
     .drone-led {
       position: absolute;
@@ -169,14 +266,37 @@
       height: 4px;
       background: #ef5350;
       border-radius: 50%;
-      top: 50%;
+      top: -1px;
       left: 50%;
-      margin-top: -2px;
       margin-left: -2px;
-      z-index: 5;
+      z-index: 6;
       animation: led-blink 1s infinite alternate;
     }
     @keyframes led-blink { from { opacity: 0.4; } to { opacity: 1; box-shadow: 0 0 6px #ef5350; } }
+    /* LED glow ring */
+    .drone-led::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      border: 1px solid rgba(239,83,80,0.3);
+      top: -2px;
+      left: -2px;
+    }
+    /* Drone state: success → green LED */
+    .drone-char.happy .drone-led {
+      background: #69f0ae;
+      box-shadow: 0 0 10px #69f0ae;
+    }
+    /* Drone state: excited → pink pulsing LED */
+    .drone-char.excited .drone-led {
+      background: #ff80ab;
+      animation: led-blink 0.4s infinite alternate;
+    }
+    .drone-char.excited .drone-camera {
+      box-shadow: 0 0 10px rgba(100,200,255,0.8);
+    }
     /* Demo animation */
     .demo-overlay {
       position: absolute;
@@ -1804,10 +1924,14 @@
     <div class="drone-prop prop-fl"></div>
     <div class="drone-prop prop-fr"></div>
     <div class="drone-body"></div>
-    <div class="drone-led"></div>
+    <div class="drone-gimbal"></div>
+    <div class="drone-camera"></div>
+    <div class="drone-sensor"></div>
+    <div class="drone-leg left"></div>
+    <div class="drone-leg right"></div>
     <div class="drone-eye left"><div class="drone-pupil"></div></div>
     <div class="drone-eye right"><div class="drone-pupil"></div></div>
-    <div class="drone-mouth"></div>
+    <div class="drone-led"></div>
   </div>
 </div>
       <div class="task-banner" id="task-banner">按下執行，讓無人機起飛！</div>
@@ -1873,10 +1997,14 @@
     <div class="drone-prop prop-fl"></div>
     <div class="drone-prop prop-fr"></div>
     <div class="drone-body"></div>
-    <div class="drone-led"></div>
+    <div class="drone-gimbal"></div>
+    <div class="drone-camera"></div>
+    <div class="drone-sensor"></div>
+    <div class="drone-leg left"></div>
+    <div class="drone-leg right"></div>
     <div class="drone-eye left"><div class="drone-pupil"></div></div>
     <div class="drone-eye right"><div class="drone-pupil"></div></div>
-    <div class="drone-mouth"></div>
+    <div class="drone-led"></div>
   </div>
 </div>
     </div>
