@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🚁 無人機編程 — 示範關卡</title>
+  <script src="https://unpkg.com/kaboom@3000/dist/kaboom.mjs" type="module"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Nunito', 'Microsoft YaHei', sans-serif;
+      background: #0a0a1a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    #game-container {
+      flex: 1;
+      position: relative;
+    }
+    canvas { display: block; }
+    
+    /* ===== 積木編程區 ===== */
+    #programming-panel {
+      height: 220px;
+      background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+      border-top: 2px solid #4fc3f7;
+      display: flex;
+      flex-direction: row;
+      padding: 10px;
+      gap: 10px;
+    }
+    #block-palette {
+      width: 180px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 10px;
+      overflow-y: auto;
+    }
+    #block-palette h3 {
+      color: #4fc3f7;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    .palette-block {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      margin: 4px 0;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: grab;
+      user-select: none;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .palette-block:hover { transform: scale(1.03); box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+    .palette-block:active { cursor: grabbing; transform: scale(0.97); }
+    .palette-block.takeoff { background: rgba(0,188,212,0.2); color: #4fc3f7; border-left: 4px solid #00bcd4; }
+    .palette-block.forward { background: rgba(67,160,71,0.2); color: #81c784; border-left: 4px solid #43a047; }
+    .palette-block.left { background: rgba(30,136,229,0.2); color: #64b5f6; border-left: 4px solid #1e88e5; }
+    .palette-block.right { background: rgba(142,36,170,0.2); color: #ce93d8; border-left: 4px solid #8e24aa; }
+    .palette-block.land { background: rgba(141,110,99,0.2); color: #bcaaa4; border-left: 4px solid #8d6e63; }
+    .palette-block.wait { background: rgba(251,140,0,0.2); color: #ffb74d; border-left: 4px solid #fb8c00; }
+    .block-icon { font-size: 16px; }
+    #workspace-area {
+      flex: 1;
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+    }
+    #workspace-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    #workspace-header h3 { color: #667eea; font-size: 13px; }
+    #workspace-count { color: #aaa; font-size: 12px; }
+    #program-workspace {
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-content: flex-start;
+      overflow-y: auto;
+      min-height: 80px;
+      border: 2px dashed rgba(102,126,234,0.3);
+      border-radius: 8px;
+      padding: 8px;
+    }
+    #program-workspace.drag-over { border-color: #4fc3f7; background: rgba(79,195,247,0.05); }
+    .program-block {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      position: relative;
+      animation: slideIn 0.2s ease-out;
+    }
+    @keyframes slideIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .program-block.takeoff { background: rgba(0,188,212,0.3); color: #4fc3f7; border: 1px solid rgba(0,188,212,0.5); }
+    .program-block.forward { background: rgba(67,160,71,0.3); color: #81c784; border: 1px solid rgba(67,160,71,0.5); }
+    .program-block.left { background: rgba(30,136,229,0.3); color: #64b5f6; border: 1px solid rgba(30,136,229,0.5); }
+    .program-block.right { background: rgba(142,36,170,0.3); color: #ce93d8; border: 1px solid rgba(142,36,170,0.5); }
+    .program-block.land { background: rgba(141,110,99,0.3); color: #bcaaa4; border: 1px solid rgba(141,110,99,0.5); }
+    .program-block.wait { background: rgba(251,140,0,0.3); color: #ffb74d; border: 1px solid rgba(251,140,0,0.5); }
+    .program-block .del-btn {
+      width: 16px; height: 16px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px;
+      cursor: pointer;
+    }
+    .program-block .del-btn:hover { background: rgba(255,100,100,0.5); }
+    .program-block.running { animation: pulse 0.5s infinite alternate; }
+    @keyframes pulse { from { box-shadow: 0 0 0 0 rgba(79,195,247,0.8); } to { box-shadow: 0 0 0 6px rgba(79,195,247,0); } }
+    #controls-area {
+      width: 160px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .ctrl-btn {
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .ctrl-btn:hover { transform: translateY(-2px); }
+    .ctrl-btn:active { transform: translateY(0); }
+    #run-btn { background: linear-gradient(135deg, #43a047, #2e7d32); color: white; box-shadow: 0 4px 15px rgba(67,160,71,0.4); }
+    #clear-btn { background: rgba(255,255,255,0.1); color: #ccc; }
+    #reset-drone-btn { background: rgba(229,57,53,0.3); color: #ef9a9a; }
+    #status-display {
+      margin-top: auto;
+      padding: 8px 12px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 8px;
+      color: #aaa;
+      font-size: 12px;
+      text-align: center;
+    }
+    #status-display.success { background: rgba(67,160,71,0.2); color: #81c784; }
+    #status-display.fail { background: rgba(229,57,53,0.2); color: #ef9a9a; }
+    
+    /* ===== 過關/失敗疊加層 ===== */
+    #overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 100;
+      backdrop-filter: blur(8px);
+    }
+    #overlay.show { display: flex; }
+    #overlay h2 { font-size: 48px; margin-bottom: 10px; }
+    #overlay p { color: #aaa; font-size: 16px; margin-bottom: 20px; }
+    #overlay button {
+      padding: 12px 30px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border: none;
+      border-radius: 25px;
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    #overlay button:hover { transform: scale(1.05); }
+    #overlay.success h2 { color: #4fc3f7; }
+    #overlay.fail h2 { color: #ef5350; }
+    
+    /* ===== 說明列 ===== */
+    #lesson-info {
+      background: rgba(102,126,234,0.15);
+      padding: 8px 20px;
+      color: #667eea;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #lesson-info strong { font-size: 15px; }
+    #hint-btn {
+      padding: 6px 14px;
+      background: rgba(102,126,234,0.3);
+      border: 1px solid rgba(102,126,234,0.5);
+      border-radius: 20px;
+      color: #667eea;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    #hint-btn:hover { background: rgba(102,126,234,0.5); }
+  </style>
+</head>
+<body>
+  <div id="lesson-info">
+    <span><strong>示範關卡：起飛 → 前進 → 着陸</strong> — 讓無人機起飛，前進到終點着陸</span>
+    <button id="hint-btn" onclick="showHint()">💡 提示</button>
+  </div>
+  <div id="game-container">
+    <canvas id="game"></canvas>
+    <div id="overlay">
+      <h2 id="overlay-icon">🎉</h2>
+      <p id="overlay-msg">過關了！</p>
+      <button onclick="restartGame()">再玩一次</button>
+    </div>
+  </div>
+  <div id="programming-panel">
+    <div id="block-palette">
+      <h3>積木</h3>
+      <div class="palette-block takeoff" draggable="true" data-type="takeoff">
+        <span class="block-icon">🚀</span> 起飛
+      </div>
+      <div class="palette-block forward" draggable="true" data-type="forward">
+        <span class="block-icon">⬆️</span> 前進
+      </div>
+      <div class="palette-block left" draggable="true" data-type="left">
+        <span class="block-icon">↩️</span> 左轉
+      </div>
+      <div class="palette-block right" draggable="true" data-type="right">
+        <span class="block-icon">↪️</span> 右轉
+      </div>
+      <div class="palette-block wait" draggable="true" data-type="wait">
+        <span class="block-icon">⏱️</span> 等待
+      </div>
+      <div class="palette-block land" draggable="true" data-type="land">
+        <span class="block-icon">🛬</span> 着陸
+      </div>
+    </div>
+    <div id="workspace-area">
+      <div id="workspace-header">
+        <h3>🎯 程式</h3>
+        <span id="workspace-count">0 個積木</span>
+      </div>
+      <div id="program-workspace"></div>
+    </div>
+    <div id="controls-area">
+      <button class="ctrl-btn" id="run-btn" onclick="runProgram()">▶ 執行</button>
+      <button class="ctrl-btn" id="clear-btn" onclick="clearProgram()">🗑 清除</button>
+      <button class="ctrl-btn" id="reset-drone-btn" onclick="resetDrone()">🔄 重置無人機</button>
+      <div id="status-display">準備就緒</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import kaboom from "https://unpkg.com/kaboom@3000/dist/kaboom.mjs";
+
+    // Init Kaboom
+    const k = kaboom({
+      canvas: document.getElementById("game"),
+      width: window.innerWidth,
+      height: window.innerHeight - 220 - 40,
+      background: [10, 15, 30],
+      crisp: true,
+      letterbox: true,
+    });
+
+    // === Constants ===
+    const BLOCK_TYPES = {
+      takeoff:  { icon: "🚀", label: "起飛", duration: 600,  color: [0, 188, 212] },
+      forward:  { icon: "⬆️", label: "前進", duration: 800,  color: [67, 160, 71] },
+      left:     { icon: "↩️", label: "左轉", duration: 500,  color: [30, 136, 229] },
+      right:    { icon: "↪️", label: "右轉", duration: 500,  color: [142, 36, 170] },
+      wait:     { icon: "⏱️", label: "等待", duration: 1000, color: [251, 140, 0] },
+      land:     { icon: "🛬", label: "着陸", duration: 600,  color: [141, 110, 99] },
+    };
+
+    // === Game State ===
+    let program = [];
+    let programIdx = 0;
+    let execTimer = null;
+    let isExecuting = false;
+    let droneAngle = 0; // degrees
+    let droneFlying = false;
+    let dronePos = vec2(0, 0);
+    let droneSpeed = 100;
+    let trailParticles = [];
+
+    // === Levels ===
+    const LEVELS = [
+      {
+        name: "第一關：起飛着陸",
+        task: "起飛 → 前進 → 着陸",
+        hint: "試試：起飛 → 前進 → 前進 → 前進 → 着陸",
+        start: { x: -250, y: 0 },
+        goal: { x: 250, y: 0 },
+        obstacles: [
+          { x: 0, y: -60, w: 30, h: 30 }
+        ]
+      }
+    ];
+
+    const currentLevel = LEVELS[0];
+
+    // === Visual constants ===
+    const GROUND_Y = 80;
+    const DRONE_SIZE = 40;
+    const GOAL_SIZE = 50;
+    const TRAIL_COLOR = [79, 195, 247];
+
+    // === Load scene ===
+    scene("game", () => {
+      // Background grid
+      const gridCount = 20;
+      for (let i = 0; i < gridCount; i++) {
+        add([
+          rect(width(), 1),
+          pos(0, i * (height() / gridCount)),
+          color(30, 40, 60),
+          opacity(0.3),
+          fixed(),
+        ]);
+      }
+      for (let i = 0; i < 30; i++) {
+        add([
+          rect(1, height()),
+          pos(i * (width() / 30), 0),
+          color(30, 40, 60),
+          opacity(0.3),
+          fixed(),
+        ]);
+      }
+
+      // Ground
+      add([
+        rect(width(), 4),
+        pos(0, height() / 2 + GROUND_Y),
+        color(26, 90, 58),
+        fixed(),
+      ]);
+      add([
+        rect(width(), 2),
+        pos(0, height() / 2 + GROUND_Y + 4),
+        color(13, 61, 36),
+        fixed(),
+      ]);
+
+      // Sky gradient text
+      add([
+        text("⬆️ 前進", { size: 20 }),
+        pos(20, 30),
+        color(102, 126, 234),
+        opacity(0.5),
+        fixed(),
+      ]);
+
+      // === Goal ===
+      const goal = add([
+        rect(GOAL_SIZE, GOAL_SIZE),
+        pos(width() / 2 + currentLevel.goal.x, height() / 2 + currentLevel.goal.y),
+        anchor("center"),
+        color(67, 160, 71),
+        opacity(0.6),
+        rotate(0),
+        "goal",
+      ]);
+
+      // Goal flag icon
+      add([
+        text("🏁", { size: 28 }),
+        pos(width() / 2 + currentLevel.goal.x, height() / 2 + currentLevel.goal.y),
+        anchor("center"),
+        "goalDeco",
+      ]);
+
+      // Goal glow animation
+      goal.onUpdate(() => {
+        goal.opacity = 0.4 + Math.sin(time() * 3) * 0.2;
+      });
+
+      // Goal label
+      add([
+        text("終點", { size: 12 }),
+        pos(width() / 2 + currentLevel.goal.x, height() / 2 + currentLevel.goal.y + GOAL_SIZE / 2 + 10),
+        anchor("center"),
+        color(67, 160, 71),
+        opacity(0.7),
+      ]);
+
+      // === Start marker ===
+      add([
+        text("起點", { size: 12 }),
+        pos(width() / 2 + currentLevel.start.x, height() / 2 + currentLevel.start.y + 40),
+        anchor("center"),
+        color(0, 188, 212),
+        opacity(0.7),
+      ]);
+      add([
+        rect(50, 3),
+        pos(width() / 2 + currentLevel.start.x - 25, height() / 2 + currentLevel.start.y + 28),
+        color(0, 188, 212),
+        opacity(0.4),
+      ]);
+
+      // === Drone ===
+      dronePos = vec2(width() / 2 + currentLevel.start.x, height() / 2 + currentLevel.start.y);
+
+      const droneBody = add([
+        rect(DRONE_SIZE, DRONE_SIZE * 0.7),
+        pos(dronePos.x, dronePos.y),
+        anchor("center"),
+        color(79, 195, 247),
+        opacity(1),
+        rotate(0),
+        "drone",
+      ]);
+
+      // Drone propellers (visual effect)
+      const prop1 = add([
+        rect(DRONE_SIZE * 0.8, 4),
+        pos(0, 0),
+        anchor("center"),
+        color(200, 230, 255),
+        opacity(0.7),
+        rotate(0),
+        "prop1",
+      ]);
+      const prop2 = add([
+        rect(DRONE_SIZE * 0.8, 4),
+        pos(0, 0),
+        anchor("center"),
+        color(200, 230, 255),
+        opacity(0.7),
+        rotate(90),
+        "prop2",
+      ]);
+
+      // Drone label
+      add([
+        text("無人機", { size: 11 }),
+        pos(dronePos.x, dronePos.y + DRONE_SIZE / 2 + 10),
+        anchor("center"),
+        color(79, 195, 247),
+        opacity(0.6),
+      ]);
+
+      // Drone onUpdate
+      droneBody.onUpdate(() => {
+        // Propeller spin
+        const spin = droneFlying ? 360 * time() * 8 : 0;
+        prop1.angle = spin;
+        prop2.angle = -spin;
+
+        // Update prop positions relative to drone
+        prop1.pos = droneBody.pos;
+        prop2.pos = droneBody.pos;
+
+        // Bobbing when flying
+        if (droneFlying) {
+          droneBody.pos.y = dronePos.y + Math.sin(time() * 4) * 3;
+        }
+
+        // Glow effect when flying
+        if (droneFlying) {
+          droneBody.color = rgb(79 + Math.sin(time() * 5) * 20, 195 + Math.sin(time() * 3) * 20, 247);
+        }
+
+        // Check goal
+        const dist = droneBody.pos.dist(vec2(width() / 2 + currentLevel.goal.x, height() / 2 + currentLevel.goal.y));
+        if (dist < GOAL_SIZE / 2 + 15 && droneFlying) {
+          winLevel();
+        }
+      });
+
+      // === Obstacles ===
+      for (const obs of currentLevel.obstacles) {
+        const ob = add([
+          rect(obs.w, obs.h),
+          pos(width() / 2 + obs.x, height() / 2 + obs.y),
+          anchor("center"),
+          color(139, 69, 19),
+          area(),
+          "obstacle",
+        ]);
+        // Obstacle icon
+        add([
+          text("🪨", { size: 20 }),
+          pos(width() / 2 + obs.x, height() / 2 + obs.y),
+          anchor("center"),
+          opacity(0.8),
+        ]);
+      }
+
+      // === Trail effect ===
+      onUpdate("trail", (t) => {
+        t.opacity -= 0.015;
+        t.size *= 0.97;
+        if (t.opacity <= 0) destroy(t);
+      });
+
+      // === Helper: add trail ===
+      function addTrail(x, y) {
+        const t = add([
+          rect(6, 6),
+          pos(x, y),
+          anchor("center"),
+          color(...TRAIL_COLOR),
+          opacity(0.8),
+          "trail",
+        ]);
+      }
+
+      // === Win Level ===
+      function winLevel() {
+        if (isExecuting) return;
+        isExecuting = true;
+        clearTimeout(execTimer);
+        document.getElementById("status-display").textContent = "🎉 過關！";
+        document.getElementById("status-display").className = "success";
+        document.getElementById("overlay").className = "show success";
+        document.getElementById("overlay-icon").textContent = "🎉";
+        document.getElementById("overlay-msg").textContent = "太棒了！成功着陸！";
+      }
+
+      // Expose winLevel globally
+      window.winLevel = winLevel;
+
+      // Expose dronePos for external use
+      window.getDronePos = () => dronePos;
+      window.getDroneBody = () => droneBody;
+      window.isDroneFlying = () => droneFlying;
+      window.setDroneFlying = (v) => { droneFlying = v; };
+      window.getDroneAngle = () => droneAngle;
+      window.setDroneAngle = (a) => {
+        droneAngle = a;
+        droneBody.angle = a;
+      };
+      window.getDroneSpeed = () => droneSpeed;
+      window.getDronePosSet = (v) => { dronePos = v; droneBody.pos = v; };
+      window.addTrailDot = addTrail;
+      window.kaboomInstance = k;
+    });
+
+    start("game");
+
+    // === Resize handler ===
+    window.addEventListener("resize", () => {
+      // Kaboom auto-resizes canvas
+    });
+  </script>
+
+  <script>
+    // === Programming Logic ===
+    let program = [];
+    let programIdx = 0;
+    let execTimer = null;
+    let isExecuting = false;
+    let execRunning = false;
+
+    function addBlock(type) {
+      program.push(type);
+      renderProgram();
+    }
+
+    function removeBlock(idx) {
+      program.splice(idx, 1);
+      renderProgram();
+    }
+
+    function renderProgram() {
+      const ws = document.getElementById('program-workspace');
+      ws.innerHTML = '';
+      program.forEach((type, idx) => {
+        const info = {
+          takeoff: { icon: '🚀', cls: 'takeoff' },
+          forward: { icon: '⬆️', cls: 'forward' },
+          left: { icon: '↩️', cls: 'left' },
+          right: { icon: '↪️', cls: 'right' },
+          wait: { icon: '⏱️', cls: 'wait' },
+          land: { icon: '🛬', cls: 'land' },
+        }[type];
+        const div = document.createElement('div');
+        div.className = `program-block ${info.cls}`;
+        div.innerHTML = `<span>${info.icon}</span> ${type === 'takeoff' ? '起飛' : type === 'forward' ? '前進' : type === 'left' ? '左轉' : type === 'right' ? '右轉' : type === 'wait' ? '等待' : '着陸'}
+          <span class="del-btn" onclick="removeBlock(${idx})">✕</span>`;
+        ws.appendChild(div);
+      });
+      document.getElementById('workspace-count').textContent = `${program.length} 個積木`;
+    }
+
+    function clearProgram() {
+      program = [];
+      programIdx = 0;
+      clearTimeout(execTimer);
+      isExecuting = false;
+      execRunning = false;
+      renderProgram();
+      document.getElementById('status-display').textContent = '已清除';
+      document.getElementById('status-display').className = '';
+    }
+
+    function resetDrone() {
+      clearTimeout(execTimer);
+      isExecuting = false;
+      execRunning = false;
+      program = [];
+      programIdx = 0;
+      renderProgram();
+
+      const k = window.kaboomInstance;
+      if (k) {
+        k.get("drone")[0].pos = k.scene() && new Promise(resolve => {
+          // Reset drone position
+          const droneBody = window.getDroneBody && window.getDroneBody();
+          if (droneBody) {
+            droneBody.pos = vec2(window.innerWidth / 2 - 250, window.innerHeight / 2);
+            window.getDronePosSet(droneBody.pos);
+          }
+          window.setDroneFlying(false);
+          window.setDroneAngle(0);
+        });
+      }
+
+      document.getElementById('status-display').textContent = '已重置';
+      document.getElementById('status-display').className = '';
+      document.getElementById('overlay').className = '';
+    }
+
+    async function runProgram() {
+      if (isExecuting && execRunning) return;
+      if (program.length === 0) {
+        document.getElementById('status-display').textContent = '請先加入積木！';
+        return;
+      }
+
+      isExecuting = true;
+      execRunning = true;
+      programIdx = 0;
+      document.getElementById('status-display').textContent = '執行中...';
+      document.getElementById('status-display').className = '';
+
+      executeNext();
+    }
+
+    function executeNext() {
+      if (programIdx >= program.length) {
+        execRunning = false;
+        document.getElementById('status-display').textContent = '完成！';
+        return;
+      }
+
+      const block = program[programIdx];
+      const blocks = document.querySelectorAll('.program-block');
+      blocks.forEach((b, i) => b.classList.remove('running'));
+      if (blocks[programIdx]) blocks[programIdx].classList.add('running');
+
+      const k = window.kaboomInstance;
+      const droneBody = window.getDroneBody && window.getDroneBody();
+      const dur = { takeoff: 600, forward: 800, left: 500, right: 500, wait: 1000, land: 600 }[block] || 500;
+
+      window.setDroneFlying(true);
+
+      if (block === 'takeoff') {
+        window.addTrailDot(droneBody.pos.x, droneBody.pos.y);
+      } else if (block === 'forward') {
+        window.setDroneAngle(0);
+        moveDroneForward(droneBody, k, 120);
+      } else if (block === 'left') {
+        window.setDroneAngle(window.getDroneAngle() - 90);
+      } else if (block === 'right') {
+        window.setDroneAngle(window.getDroneAngle() + 90);
+      } else if (block === 'wait') {
+        // Just wait
+      } else if (block === 'land') {
+        window.setDroneFlying(false);
+      }
+
+      execTimer = setTimeout(() => {
+        programIdx++;
+        executeNext();
+      }, dur);
+    }
+
+    function moveDroneForward(droneBody, k, amount) {
+      if (!droneBody || !k) return;
+      const pos = window.getDronePos();
+      const newX = pos.x + amount;
+      window.getDronePosSet(vec2(newX, pos.y));
+      droneBody.pos = vec2(newX, pos.y);
+      window.addTrailDot(pos.x, pos.y);
+    }
+
+    function restartGame() {
+      document.getElementById('overlay').className = '';
+      program = [];
+      programIdx = 0;
+      isExecuting = false;
+      execRunning = false;
+      clearTimeout(execTimer);
+      renderProgram();
+
+      // Reset drone via Kaboom
+      const k = window.kaboomInstance;
+      if (k) {
+        const drones = k.get("drone");
+        if (drones && drones[0]) {
+          drones[0].pos = vec2(window.innerWidth / 2 - 250, window.innerHeight / 2 - 50);
+          window.getDronePosSet(drones[0].pos);
+        }
+        window.setDroneFlying(false);
+        window.setDroneAngle(0);
+      }
+
+      document.getElementById('status-display').textContent = '準備就緒';
+      document.getElementById('status-display').className = '';
+    }
+
+    function showHint() {
+      alert("💡 提示：\n\n嘗試這個組合：\n🚀 起飛 → ⬆️ 前進 × 3 → 🛬 着陸\n\n目標：讓無人機起飛，飛到終點着陸！");
+    }
+
+    // === Drag & Drop ===
+    document.querySelectorAll('.palette-block').forEach(el => {
+      el.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('type', el.dataset.type);
+      });
+    });
+
+    const ws = document.getElementById('program-workspace');
+    ws.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      ws.classList.add('drag-over');
+    });
+    ws.addEventListener('dragleave', () => ws.classList.remove('drag-over'));
+    ws.addEventListener('drop', (e) => {
+      e.preventDefault();
+      ws.classList.remove('drag-over');
+      const type = e.dataTransfer.getData('type');
+      if (type) addBlock(type);
+    });
+
+    // === Keyboard shortcut: click palette to add ===
+    document.querySelectorAll('.palette-block').forEach(el => {
+      el.addEventListener('click', () => {
+        addBlock(el.dataset.type);
+      });
+    });
+
+    // Make functions global
+    window.removeBlock = removeBlock;
+    window.restartGame = restartGame;
+    window.showHint = showHint;
+  </script>
+</body>
+</html>
